@@ -132,3 +132,6 @@ dist
 # custom
 .env
 src/config/index.js
+.vscode
+pocketbase/pocketbase*
+pocketbase/pb_*
