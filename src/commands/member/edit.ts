@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from 'discord.js';
 
-import { KnifeType } from '../../Enums';
+import { KnifeCategory } from '../../Enums';
 
 /*
 Allow user to edit a knife record
@@ -31,15 +31,15 @@ export default {
     )
     .addStringOption(option =>
       option
-        .setName('type')
+        .setName('category')
         .setDescription('種類')
         .setRequired(true)
         .setChoices(
-          { name: '物理刀', value: KnifeType.PHYSICAL },
-          { name: '法刀', value: KnifeType.MAGIC },
-          { name: '新黑刀', value: KnifeType.NYARU },
-          { name: '超佩刀', value: KnifeType.PEKO },
-          { name: '其他', value: KnifeType.OTHER },
+          { name: '物理刀', value: KnifeCategory.PHYSICAL },
+          { name: '法刀', value: KnifeCategory.MAGIC },
+          { name: '新黑刀', value: KnifeCategory.NYARU },
+          { name: '超佩刀', value: KnifeCategory.PEKO },
+          { name: '其他', value: KnifeCategory.OTHER },
         )
     )
     .addBooleanOption(option =>

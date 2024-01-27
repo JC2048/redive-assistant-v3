@@ -1,4 +1,13 @@
-interface GuildSetting {
+import { KnifeCategory, KnifeType } from '../Enums'
+
+export interface DatabaseGuildSetting {
+
+  id: string
+  readonly created: string | Date
+  readonly updated: string | Date
+
+  readonly collectionId: string,
+  readonly collectionName: "guild_setting",
 
   dashboard: {
     knife_table: {
@@ -21,25 +30,49 @@ interface GuildSetting {
     nickname: string
     showProgressInName: boolean
   }
-  
+
 }
 
-interface GuildData {
+export interface DatabaseGuildData {
+
+  id: string
+  readonly created: string | Date
+  readonly updated: string | Date
+
+  readonly collectionId: string,
+  readonly collectionName: "guild_data",
 
   progress: [number, number, number, number, number]
   hp: [number, number, number, number, number]
 
-  knife: {
-    full: number
-    leftover: number
-  }
+  full_knife_count: number
+  leftover_knife_count: number
 
 }
 
-interface UserData {
-  id: string
-  nickname: string
-  record_ids: string[]
+export interface UserData {
+  user_id: string
+  guild_id: string
+  // nickname: string
+  // record_ids: string[]
   knife_count: number
-  compensate_count: number
+  leftover_count: number
 }
+
+export interface RecordData {
+  user: unknown
+  week: number
+  boss: 1 | 2 | 3 | 4 | 5
+  category: KnifeCategory
+  isLeftover: KnifeType
+}
+
+interface DatabaseFields {
+  readonly id: string
+  readonly created: string | Date
+  readonly updated: string | Date
+}
+
+export type DatabaseRecordData = DatabaseFields & RecordData
+export type DatabaseUserData = DatabaseFields & UserData
+

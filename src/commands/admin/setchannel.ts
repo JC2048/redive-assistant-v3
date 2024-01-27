@@ -10,7 +10,7 @@ export default {
     .setDescription('設定報刀/成員列表頻道')
     .addStringOption(option =>
       option
-        .setName('type')
+        .setName('category')
         .setDescription('刷新類別')
         .setRequired(true)
         .setChoices(

@@ -1,4 +1,4 @@
-enum KnifeType {
+enum KnifeCategory {
   PHYSICAL = "phy",
   MAGIC = "mag",
   NYARU = "ny",
@@ -6,6 +6,12 @@ enum KnifeType {
   OTHER = "other"
 }
 
+enum KnifeType {
+  FULL = 0,
+  LEFTOVER = 1
+}
+
 export {
-  KnifeType
+  KnifeCategory,
+  KnifeType,
 }

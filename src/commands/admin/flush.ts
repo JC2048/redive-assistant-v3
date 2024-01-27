@@ -10,7 +10,7 @@ export default {
     .setDescription('刷新報刀/成員列表')
     .addStringOption(option =>
       option
-        .setName('type')
+        .setName('category')
         .setDescription('刷新類別')
         .setRequired(true)
         .setChoices(
