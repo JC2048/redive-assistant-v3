@@ -24,6 +24,7 @@ async function registerCommand() {
     // prepare commands JSON body
     const commands = [];
     commandMap.forEach((value) => {
+      // console.log(value.data.options)
       commands.push(value.data.toJSON());
     });
 
@@ -46,18 +47,32 @@ async function registerCommand() {
 
 client.once(Events.ClientReady, readyClient => {
   console.log(`Redive Assistant v3 is ready and logged in as ${readyClient.user.tag}`);
-
+  console.log()
   // load slash commands to every server ID in config.guild_ids[]
   registerCommand()
 });
 
 client.on(Events.InteractionCreate, (interaction) => {
-  if (!interaction.isCommand()) return;
+  if (!interaction.isChatInputCommand()) return;
   try {
+    // console.log(
+    //   JSON.stringify(interaction, (key, value) => {
+    //     if (typeof value === 'bigint') {
+    //       return value.toString();
+    //     } else {
+    //       return value;
+    //     }
+    //   })
+    // )
     commandMap.get(interaction.commandName).execute(interaction);
   } catch (error) {
     console.error(error)
-    interaction.reply('Command failed to run, please try again')
+    interaction.reply(
+      {
+        content: "指令出現錯誤,請再試一次或者聯絡負責人",
+        ephemeral: true
+      }
+    )
   }
   console.log(`${interaction.user.tag} ran ${interaction.commandName}`);
 });
