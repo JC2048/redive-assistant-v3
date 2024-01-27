@@ -1,12 +1,25 @@
-import Command from '../interface/Command';
+import Command from "interface/Command";
 
-import * as Commands from '.';
+import * as memberCommands from "./member";
+import * as adminCommands from "./admin";
+import * as utilCommands from "./util";
+import * as sysCommands from "./sys";
 
-const commandMap = new Map<string, Command>();
+function setCommandGroup(commands): Map<string, Command> {
 
-const keys = Object.keys(Commands);
-for (const key of keys) {
-  commandMap.set(key, Commands[key]);
+  const commandMap = new Map<string, Command>()
+  const keys = Object.keys(commands);
+  for (const key of keys) {
+    commandMap.set(key, commands[key]);
+  }
+  return commandMap
 }
 
-export default commandMap
+export const commandMap = new Map<string, Command>(
+  [
+    ...setCommandGroup(memberCommands),
+    ...setCommandGroup(adminCommands),
+    ...setCommandGroup(utilCommands),
+    ...setCommandGroup(sysCommands)
+  ]
+)

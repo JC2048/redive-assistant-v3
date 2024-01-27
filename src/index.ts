@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 import config from "./config";
 
-import commandMap from "./commands";
+import { commandMap } from "./commands";
 
 dotenv.config()
 
@@ -11,14 +11,14 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
+    // GatewayIntentBits.MessageContent,
   ]
 });
 
 async function registerCommand() {
   try {
     console.log(
-      `Started refreshing ${commandMap.size} application (/) commands.`,
+      `Started reloading ${commandMap.size} application (/) commands.`,
     );
 
     // prepare commands JSON body
@@ -30,12 +30,14 @@ async function registerCommand() {
     const rest = new REST().setToken(process.env.TOKEN);
 
     // The put method is used to fully refresh all commands in the guild with the current set
+
     const [data] = await Promise.all(
       config.guild_ids.map(guildId => rest.put(
         Routes.applicationGuildCommands(process.env.CLIENT_ID, guildId),
         { body: commands }
       )
-    ))
+      ))
+
     console.log("Successfully reloaded application (/) commands.");
   } catch (error) {
     console.error(error);
@@ -46,7 +48,7 @@ client.once(Events.ClientReady, readyClient => {
   console.log(`Redive Assistant v3 is ready and logged in as ${readyClient.user.tag}`);
 
   // load slash commands to every server ID in config.guild_ids[]
-  // registerCommand()
+  registerCommand()
 });
 
 client.on(Events.InteractionCreate, (interaction) => {
