@@ -135,3 +135,5 @@ src/config/index.js
 .vscode
 pocketbase/pocketbase*
 pocketbase/pb_*
+
+.DS_Store
