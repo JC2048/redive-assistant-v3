@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ESNext",
     "target": "ES6",
+    "moduleResolution": "Node",
     "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
@@ -10,7 +11,6 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "incremental": false,
@@ -34,6 +34,8 @@
   ],
   "ts-node": {
     "swc": true,
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
     "transpileOnly": true
   }
 }

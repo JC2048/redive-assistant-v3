@@ -1,29 +1,26 @@
 import { KnifeCategory, KnifeType } from '../Enums'
 
-export interface DatabaseGuildSetting {
+export interface DatabaseGuildSetting extends DatabaseFields {
 
-  id: string
-  readonly created: string | Date
-  readonly updated: string | Date
+  readonly collectionName: "guild_setting"
 
-  readonly collectionId: string,
-  readonly collectionName: "guild_setting",
+  guildId: string
 
   dashboard: {
-    knife_table: {
-      channel_id: string
-      message_id: string
-      top_message: string | null
+    knifeTable: {
+      channelId: string
+      messageId: string
+      topMessage: string | null
     }
-    member_table: {
-      channel_id: string
-      message_id: string
-      top_message: string | null
+    memberTable: {
+      channelId: string
+      messageId: string
+      topMessage: string | null
     }
   }
 
   user: {
-    max_report_count: number
+    maxReportCount: number
   }
 
   bot: {
@@ -33,30 +30,27 @@ export interface DatabaseGuildSetting {
 
 }
 
-export interface DatabaseGuildData {
+export interface GuildSetting extends Omit<DatabaseGuildSetting, "id" | "created" | "updated" | "collectionId" | "collectionName"> {}
 
-  id: string
-  readonly created: string | Date
-  readonly updated: string | Date
+export interface DatabaseGuildData extends DatabaseFields {
 
-  readonly collectionId: string,
-  readonly collectionName: "guild_data",
+  readonly collectionName: "guild_data"
 
   progress: [number, number, number, number, number]
   hp: [number, number, number, number, number]
 
-  full_knife_count: number
-  leftover_knife_count: number
+  fullKnifeCount: number
+  leftoverKnifeount: number
 
 }
 
 export interface UserData {
-  user_id: string
-  guild_id: string
+  userId: string
+  guildId: string
   // nickname: string
   // record_ids: string[]
-  knife_count: number
-  leftover_count: number
+  knifeCount: number
+  leftoverCount: number
 }
 
 export interface RecordData {
@@ -64,13 +58,17 @@ export interface RecordData {
   week: number
   boss: 1 | 2 | 3 | 4 | 5
   category: KnifeCategory
-  isLeftover: KnifeType
+  isLeftover: boolean
+  isCompleted: boolean
 }
 
 interface DatabaseFields {
   readonly id: string
   readonly created: string | Date
   readonly updated: string | Date
+
+  readonly collectionId: string
+  readonly collectionName: string
 }
 
 export type DatabaseRecordData = DatabaseFields & RecordData
