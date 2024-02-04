@@ -11,6 +11,7 @@ const argumentNameMap: Record<string, string> = {
 
   頻道: "channel",
   列表: "list",
+  血量: "hp",
 }
 
 export async function argumentParser(interaction: ChatInputCommandInteraction, options: any[], exec: (interaction: ChatInputCommandInteraction, args: Record<string, any>) => Promise<void>) {
