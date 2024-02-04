@@ -7,7 +7,10 @@ const argumentNameMap: Record<string, string> = {
   種類: "category",
   補償刀: "leftover",
   備註: "note",
-  成員: "user"
+  成員: "user",
+
+  頻道: "channel",
+  列表: "list",
 }
 
 export async function argumentParser(interaction: ChatInputCommandInteraction, options: any[], exec: (interaction: ChatInputCommandInteraction, args: Record<string, any>) => Promise<void>) {
