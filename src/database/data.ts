@@ -33,5 +33,28 @@ export default {
       console.log(`Created new Data for guild ${guildId}`)
     }
 
+  },
+
+  update: async(guildId: string, data: Partial<GuildData>) => {
+    try {
+      const oldData = await db.collection('guild_data').getFirstListItem(`guildId = "${guildId}"`)
+      await db.collection('guild_data').update(
+        oldData.id, data
+      )
+    } catch (e) {
+      console.log("[ERROR] Error while updating guild data for guild " + guildId)
+      console.log(e)
+    }
+  },
+
+  get: async(guildId: string) => {
+
+    try {
+      const data = await db.collection('guild_data').getFirstListItem(`guildId = "${guildId}"`)
+      return data
+    } catch (e) {
+      console.log("[ERROR] Error while getting guild data for guild " + guildId)
+      console.log(e)
+    }
   }
 }
