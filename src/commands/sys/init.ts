@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Interaction } from 'discord.js';
 import { sleep } from '../../script/util';
 
-import { setting } from '../../database';
+import { setting, data as dbData } from '../../database';
 
 
 /*
@@ -15,13 +15,14 @@ const data = new SlashCommandBuilder()
 export default {
   data: data,
   execute: async (interaction) => {
+    
     const response = await interaction.reply({
       content: "此指令將會將所有伺服器設定初始化!\n請確認是否繼續?",
       ephemeral: true,
       components: [
         new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId(interaction.id + "initconfirm").setLabel("確定").setStyle(ButtonStyle.Danger),
-          new ButtonBuilder().setCustomId(interaction.id + "initcancel").setLabel("取消").setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId(interaction.id + "init_confirm").setLabel("確定").setStyle(ButtonStyle.Danger),
+          new ButtonBuilder().setCustomId(interaction.id + "init_cancel").setLabel("取消").setStyle(ButtonStyle.Secondary),
         )
       ]
     })
@@ -30,10 +31,11 @@ export default {
 
     try {
       const buttonPressed = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
-      if (buttonPressed.customId == interaction.id + "initconfirm") {
+      if (buttonPressed.customId == interaction.id + "init_confirm") {
         // $ Run Init
 
         await setting.init(interaction.guildId!)
+        await dbData.init(interaction.guildId!)
         await interaction.editReply({ content: '已進行初始化!', components: [] });
 
       } else {
