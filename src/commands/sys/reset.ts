@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, CommandInteraction, } from 'discord.js';
 import { data as dbData, setting, user } from '../../database';
 import { client } from '../../index';
 
@@ -13,15 +13,17 @@ const data = new SlashCommandBuilder()
 
 export default {
   data: data,
-  execute: async (interaction) => {
+  execute: async (interaction: ChatInputCommandInteraction) => {
 
     const response = await interaction.reply({
       content: "此指令將會將所有報刀記錄及成員資料初始化!\n請確認是否繼續?",
       ephemeral: true,
       components: [
-        new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId(interaction.id + "reset_confirm").setLabel("確定").setStyle(ButtonStyle.Danger),
-          new ButtonBuilder().setCustomId(interaction.id + "reset_cancel").setLabel("取消").setStyle(ButtonStyle.Secondary),
+        new ActionRowBuilder<ButtonBuilder>().addComponents(
+          [
+            new ButtonBuilder().setCustomId(interaction.id + "reset_confirm").setLabel("確定").setStyle(ButtonStyle.Danger),
+            new ButtonBuilder().setCustomId(interaction.id + "reset_cancel").setLabel("取消").setStyle(ButtonStyle.Secondary),
+          ]
         )
       ]
     })
@@ -31,7 +33,9 @@ export default {
     try {
 
       const buttonPressed = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
-      if (buttonPressed.customId == interaction.id + "reset_confirm") {
+      if (buttonPressed.customId === interaction.id + "reset_confirm") {
+
+        await buttonPressed.deferUpdate()
 
         const settings = await setting.get(interaction.guildId!)
 
@@ -46,18 +50,33 @@ export default {
           return
         }
 
-        // perform init
+        if (settings.user.roleId === "0") {
+          await interaction.editReply({content: `尚未設定成員身份組\n請先用\`/setmemberrole\`進行設定`, components: [] });
+          return
+        }
+
+        // perform init on db data
         await dbData.init(interaction.guildId!)
 
         // delete all existing data
         await user.guildDeleteAll(interaction.guildId)
 
         // init for all valid user
-        const guildMembers = interaction.guild.members.cache.filter(member => member.roles.cache.some(role => role.id == settings.user.roleId))
-        const guildMemberIds = guildMembers.map(member => member.id) as string[]
+        const guildMemberIds = await interaction.guild.members.fetch()
+          .then(fetchedMembers => {
+            const guildMemberIds = fetchedMembers
+              .map(member => member)
+              .filter(member => member.roles.cache.some(role => role.id == settings.user.roleId))
+              .map(member => member.id)
+            return guildMemberIds
+          })
+
+        console.log(JSON.stringify(guildMemberIds, null, 2))
+        console.log(`Length: ${guildMemberIds.length}`)
 
         await user.guildInit(interaction.guildId!, guildMemberIds)
 
+        console.log("finish guild user init")
         // TODO update member and knife table
 
         await interaction.editReply({ content: '已重置所有紀錄!', components: [] });
@@ -69,6 +88,7 @@ export default {
 
 
     } catch (e) {
+      console.error(e)
       await interaction.editReply({ content: '指令已逾時', components: [] });
     }
 

@@ -28,9 +28,9 @@ export default {
 
     const userDeletePromises = []
     for (const guildUserData of guildUserDataList) {
-      userDeletePromises.push(db.collection('user').delete(guildUserData.id))
+      userDeletePromises.push(db.collection('user').delete(guildUserData.id, { requestKey: guildUserData.id }))
     }
-    await Promise.all(userDeletePromises)
+    if (userDeletePromises.length > 0) await Promise.all(userDeletePromises)
 
   },
 
@@ -45,6 +45,8 @@ export default {
           guildId: guildId,
           knifeCount: 3,
           leftoverCount: 0
+        }, {
+          requestKey: userId
         })
           .then(() =>
             console.log(`Created user ${userId} in guild ${guildId}`)
