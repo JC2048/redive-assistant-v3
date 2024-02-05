@@ -9,12 +9,12 @@ export interface DatabaseGuildSetting extends DatabaseFields {
   knifeTable: {
     channelId: string
     messageId: string
-    topMessage: string | null
+    topMessage?: string | null
   }
   memberTable: {
     channelId: string
     messageId: string
-    topMessage: string | null
+    topMessage?: string | null
   }
 
   user: {
