@@ -6,17 +6,15 @@ export interface DatabaseGuildSetting extends DatabaseFields {
 
   guildId: string
 
-  dashboard: {
-    knifeTable: {
-      channelId: string
-      messageId: string
-      topMessage: string | null
-    }
-    memberTable: {
-      channelId: string
-      messageId: string
-      topMessage: string | null
-    }
+  knifeTable: {
+    channelId: string
+    messageId: string
+    topMessage: string | null
+  }
+  memberTable: {
+    channelId: string
+    messageId: string
+    topMessage: string | null
   }
 
   user: {
@@ -30,19 +28,23 @@ export interface DatabaseGuildSetting extends DatabaseFields {
 
 }
 
-export interface GuildSetting extends Omit<DatabaseGuildSetting, "id" | "created" | "updated" | "collectionId" | "collectionName"> {}
+export interface GuildSetting extends Omit<DatabaseGuildSetting, "id" | "created" | "updated" | "collectionId" | "collectionName"> { }
 
 export interface DatabaseGuildData extends DatabaseFields {
 
   readonly collectionName: "guild_data"
 
+  guildId: string
+
   progress: [number, number, number, number, number]
   hp: [number, number, number, number, number]
 
   fullKnifeCount: number
-  leftoverKnifeount: number
+  leftoverKnifeCount: number
 
 }
+
+export interface GuildData extends Omit<DatabaseGuildData, "id" | "created" | "updated" | "collectionId" | "collectionName"> { }
 
 export interface UserData {
   userId: string
