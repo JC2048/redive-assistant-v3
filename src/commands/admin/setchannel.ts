@@ -42,7 +42,7 @@ export default {
 
       // TODO run board message generator
       const boardMessage = await channel.send({
-        content: "This is a test message."
+        content: `${args.list === "knifeTable" ? "報刀" : "成員"}列表佔位用,請勿刪除`
       })
 
       // update
