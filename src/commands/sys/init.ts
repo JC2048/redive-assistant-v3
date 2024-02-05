@@ -31,11 +31,15 @@ export default {
 
     try {
       const buttonPressed = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 })
+
       if (buttonPressed.customId == interaction.id + "init_confirm") {
         // $ Run Init
 
         await setting.init(interaction.guildId!)
         await dbData.init(interaction.guildId!)
+
+        await interaction.guild.members.me.setNickname("露娜 3.0")
+
         await interaction.editReply({ content: '已進行初始化!', components: [] });
 
       } else {
