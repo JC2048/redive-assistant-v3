@@ -5,7 +5,7 @@ import { argumentParser } from '../../script/argumentParser';
 
 import { user, record } from '../../database';
 
-import { knifeCategoryTranslator } from 'script/util';
+import { knifeCategoryTranslator } from '../../script/util';
 
 /*
 Allow user to submit a knife record to the db
