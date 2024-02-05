@@ -12,6 +12,8 @@ const argumentNameMap: Record<string, string> = {
   頻道: "channel",
   列表: "list",
   血量: "hp",
+
+  身分組: "role",
 }
 
 export async function argumentParser(interaction: ChatInputCommandInteraction, options: any[], exec: (interaction: ChatInputCommandInteraction, args: Record<string, any>) => Promise<void>) {
@@ -24,23 +26,29 @@ export async function argumentParser(interaction: ChatInputCommandInteraction, o
         args[name] = await interaction.options.getInteger(option.name)
         break
       case ApplicationCommandOptionType.Number:
-        args[name] =  await interaction.options.getNumber(option.name)
+        args[name] = await interaction.options.getNumber(option.name)
         break
       case ApplicationCommandOptionType.String:
-        args[name] =  await interaction.options.getString(option.name)
+        args[name] = await interaction.options.getString(option.name)
         break
       case ApplicationCommandOptionType.Boolean:
-        args[name] =  await interaction.options.getBoolean(option.name)
+        args[name] = await interaction.options.getBoolean(option.name)
         break
-      case ApplicationCommandOptionType.Mentionable:  // user
-        args[name] =  await interaction.options.getMentionable(option.name)
+      case ApplicationCommandOptionType.Mentionable:  // user or role
+        args[name] = await interaction.options.getMentionable(option.name)
+        break
+      case ApplicationCommandOptionType.Role:
+        args[name] = await interaction.options.getRole(option.name)
+        break
+      case ApplicationCommandOptionType.User:
+        args[name] = await interaction.options.getUser(option.name)
         break
       case ApplicationCommandOptionType.Channel:
-        args[name] =  await interaction.options.getChannel(option.name)
+        args[name] = await interaction.options.getChannel(option.name)
         break
 
       default:
-        args[name] =  null
+        args[name] = null
 
     }
   }

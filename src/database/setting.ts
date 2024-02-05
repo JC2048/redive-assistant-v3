@@ -22,6 +22,7 @@ export default {
       },
 
       user: {
+        roleId: "0",
         maxReportCount: 12
       },
 
@@ -59,7 +60,16 @@ export default {
       console.log("[ERROR] Error while updating guild setting for guild " + guildId)
       console.log(e)
     }
+  },
 
+  get: async (guildId: string) => {
 
+    try {
+      const setting = await db.collection('guild_setting').getFirstListItem(`guildId = "${guildId}"`)
+      return setting as DatabaseGuildSetting
+    } catch (e) {
+      console.log("[ERROR] Error while getting guild setting for guild " + guildId)
+      console.log(e)
+    }
   }
 }

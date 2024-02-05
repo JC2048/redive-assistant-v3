@@ -18,6 +18,7 @@ export interface DatabaseGuildSetting extends DatabaseFields {
   }
 
   user: {
+    roleId: string
     maxReportCount: number
   }
 
