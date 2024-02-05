@@ -93,12 +93,12 @@ client.on(Events.InteractionCreate, (interaction) => {
     console.error(error)
     interaction.reply(
       {
-        content: "指令出現錯誤,請再試一次或者聯絡負責人",
+        content: "指令出現錯誤",
         ephemeral: true
       }
     )
   }
-  console.log(`${interaction.user.tag} ran ${interaction.commandName}`);
+  console.log(`[/] User ${interaction.user.tag} (${interaction.user.id}) ran ${interaction.commandName} in guild ${interaction.guildId}`);
 });
 
 client.login(process.env.TOKEN);
