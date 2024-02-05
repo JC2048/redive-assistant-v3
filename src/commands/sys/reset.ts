@@ -55,24 +55,28 @@ export default {
           return
         }
 
+        // get all roled users
+        const guildMemberIds = await interaction.guild.members.fetch()
+        .then(fetchedMembers => {
+          const guildMemberIds = fetchedMembers
+            .map(member => member)
+            .filter(member => member.roles.cache.some(role => role.id == settings.user.roleId))
+            .map(member => member.id)
+          return guildMemberIds
+        })
+
+        // return if too many member
+        if (guildMemberIds.length > 30) {
+          await interaction.editReply({ content: `成員人數超過30名! 請檢查擁有身份組的成員!`, components: [] });
+          return
+        }
+
         // perform init on db data
         await dbData.init(interaction.guildId!)
 
         // delete all existing data
         await user.guildDeleteAll(interaction.guildId)
 
-        // init for all valid user
-        const guildMemberIds = await interaction.guild.members.fetch()
-          .then(fetchedMembers => {
-            const guildMemberIds = fetchedMembers
-              .map(member => member)
-              .filter(member => member.roles.cache.some(role => role.id == settings.user.roleId))
-              .map(member => member.id)
-            return guildMemberIds
-          })
-
-        console.log(JSON.stringify(guildMemberIds, null, 2))
-        console.log(`Length: ${guildMemberIds.length}`)
 
         await user.guildInit(interaction.guildId!, guildMemberIds)
 
