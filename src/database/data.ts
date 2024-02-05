@@ -1,5 +1,5 @@
 import { db } from '../index'
-import { GuildData } from '../types/Database'
+import { DatabaseGuildData, GuildData } from '../types/Database'
 import config from '../config'
 
 export default {
@@ -47,10 +47,10 @@ export default {
     }
   },
 
-  get: async(guildId: string) => {
+  get: async(guildId: string): Promise<DatabaseGuildData> => {
 
     try {
-      const data = await db.collection('guild_data').getFirstListItem(`guildId = "${guildId}"`)
+      const data = await db.collection('guild_data').getFirstListItem<DatabaseGuildData>(`guildId = "${guildId}"`)
       return data
     } catch (e) {
       console.log("[ERROR] Error while getting guild data for guild " + guildId)
