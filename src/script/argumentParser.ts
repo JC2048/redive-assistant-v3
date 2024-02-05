@@ -20,7 +20,7 @@ export async function argumentParser(interaction: ChatInputCommandInteraction, o
   const args = {}
   for (const option of options) {
     const name = argumentNameMap[option.name]
-    console.log(name)
+
     switch (option.type) {
       case ApplicationCommandOptionType.Integer:
         args[name] = await interaction.options.getInteger(option.name)
