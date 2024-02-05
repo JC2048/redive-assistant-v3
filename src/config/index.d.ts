@@ -1,6 +1,6 @@
 declare const config: {
   guild_ids: string[]
-  hp: number[][]
+  hp: [number, number, number, number, number][]
   stageStart: number[]
 }
 
