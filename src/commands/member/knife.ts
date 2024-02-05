@@ -87,7 +87,7 @@ export default {
       })
       if (response) {
         await interaction.editReply({
-          content: `已新增報刀紀錄!\n${args.week}周${args.boss}王 ${args.category} ${args.leftover === 1 ? '(補償)' : ''} ${!!args.note ? `\n${args.note}` : ''}`,
+          content: `已新增報刀紀錄!\n${args.week}周${args.boss}王 ${knifeCategoryTranslator(args.category)} ${args.leftover === 1 ? '(補償)' : ''} ${!!args.note ? `\n${args.note}` : ''}`,
         })
         // TODO use embed message
       } else {

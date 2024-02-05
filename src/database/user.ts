@@ -1,4 +1,4 @@
-import { UserData } from '../types/Database'
+import { UserData, DatabaseUserData } from '../types/Database'
 import { db } from '../index'
 
 export default {
@@ -18,6 +18,14 @@ export default {
       data
     )
 
+  },
+
+  get: async (guildId: string, userId: string): Promise<DatabaseUserData | null> => {
+
+    const data = await db.collection('user').getFirstListItem(`userId = "${userId}" && guildId = "${guildId}"`)
+    if (!!data) return data as DatabaseUserData
+    return null
+    
   },
 
   guildDeleteAll: async (guildId: string) => {
