@@ -57,7 +57,7 @@ export interface UserData {
 }
 
 export interface RecordData {
-  user: unknown
+  user: string
   week: number
   boss: 1 | 2 | 3 | 4 | 5
   category: KnifeCategory
