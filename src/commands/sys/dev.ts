@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 
-import setting from '../../database/setting';
+import generateKnifeTable from '../../script/knifeTableGenerator';
+import { weekToStage } from '../../script/util';
 
 const data = new SlashCommandBuilder()
   .setName('dev')
@@ -9,8 +10,13 @@ const data = new SlashCommandBuilder()
 export default {
   data: data,
   execute: async (interaction) => {
-    interaction.reply({
-      content: "dev",
+
+    await interaction.deferReply()
+
+    const msg = await generateKnifeTable(interaction.guildId)
+
+    await interaction.editReply({
+      content: msg,
       ephemeral: true
     })
   },

@@ -1,0 +1,69 @@
+import { client } from '../index'
+import { record, setting, data } from '../database'
+import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
+import config from '../config'
+import { DatabaseRecordData } from 'types/Database'
+
+
+export default async function generateKnifeTable(guildId: string): Promise<string> {
+
+  const guild = await client.guilds.fetch(guildId)
+  const members = await guild.members.fetch()
+
+  const guildData = await data.get(guildId)
+  const guildSetting = await setting.get(guildId)
+
+  const minProgress = Math.min(...guildData.progress)
+  const maxProgress = Math.max(...guildData.progress) + 2
+
+  // always generate at least 3 rounds
+  const tableWeekCount = Math.max(3, maxProgress - minProgress + 1)
+
+  const recordFilter = `week >= ${minProgress} && week <= ${minProgress + tableWeekCount - 1}`
+  const guildRecords = await record.getGuildRecords(guildId, recordFilter)
+
+  // generate traversed record matrix
+  const recordMatrix: DatabaseRecordData[][][] = new Array(tableWeekCount).fill(0).map(() => new Array(5).fill(0).map(() => []))
+
+  for (const record of guildRecords) {
+    const recordTableWeek = record.week - minProgress;
+    (recordMatrix[recordTableWeek][record.boss - 1]).push(record)
+  }
+
+  // header
+  let tableText = `戰隊尚餘: 🔹${guildData.fullKnifeCount} 🔸${guildData.leftoverKnifeCount}\n`
+
+  for (let i = 0; i < 5; i++) {
+
+    tableText += `${parseChineseBossNumber(i + 1 as 1 | 2 | 3 | 4 | 5)}王 | ${guildData.progress[i] + 1}周 ${guildData.hp[i]}萬\n`
+
+  }
+
+  tableText += "--------------------\n\n"
+
+  for (let i = 0; i < tableWeekCount; i++) {
+
+    // week loop
+    const currentRound = i + minProgress
+    const currentWeek = currentRound + 1   // week = round + 1
+    tableText += `${currentWeek}周-------${i === 0 || config.stageStart.indexOf(currentRound) !== -1 ? ` [${parseChineseBossNumber(weekToStage(currentWeek))}階段]` : "----"}\n`
+
+    // boss loop
+    for (let j = 0; j < 5; j++) {
+
+      tableText += `${guildData.progress[j] === currentWeek - 1 ? "▶️" : guildData.progress[j] > currentWeek - 1 ? "✅" : "🕓"} ${parseChineseBossNumber(j + 1)}王 `
+      tableText += `${guildData.progress[j] === currentWeek - 1 ? `${guildData.hp[j]}萬` : guildData.progress[j] > currentWeek - 1 ? "" : `${config.hp[weekToStage(currentWeek)][j]}萬`}\n`
+
+      for (const record of recordMatrix[i][j]) {
+        const guildMember = members.get(record.userId)
+        tableText += `  ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}\n`
+      }
+    }
+    tableText += "\n"
+  }
+
+  tableText += `\n最後更新： ${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Hong_Kong", hour12: false })} 共\`${guildRecords.length}\`則記錄`
+
+  return tableText
+
+}
