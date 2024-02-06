@@ -20,7 +20,8 @@ export default {
     
     const recordFilter = !!filter ? `guildId = "${guildId}" && ${filter}` : `guildId = "${guildId}"`
     const records = await db.collection('record').getFullList<DatabaseRecordData>({
-      filter: recordFilter
+      filter: recordFilter,
+      sort: "+updated"
     })
 
     return records
@@ -32,6 +33,7 @@ export default {
     const recordFilter = `user = "${databaseUserData.id}"${filter == "" || filter == undefined ? "" : ` && ${filter}`}`
     const records = await db.collection('record').getFullList<DatabaseRecordData>({
       filter: recordFilter,
+      sort: "+updated"
     })
 
     return records
