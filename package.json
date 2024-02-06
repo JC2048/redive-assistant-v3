@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "ts-node src/index.ts",
+    "test": "node --loader ts-node/esm src/index.ts",
     "start": "node build/index.js",
     "compile": "tsc -p ."
   },
@@ -17,6 +17,7 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
     "node-cron": "^3.0.3",
-    "pocketbase": "^0.21.0"
+    "pocketbase": "^0.21.0",
+    "ts-node": "^10.9.2"
   }
 }
