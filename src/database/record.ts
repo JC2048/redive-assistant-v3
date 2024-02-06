@@ -1,4 +1,4 @@
-import { RecordData } from '../types/Database'
+import { RecordData, UserData, DatabaseUserData, DatabaseRecordData } from '../types/Database'
 import { db } from '../index'
 
 export default {
@@ -16,10 +16,17 @@ export default {
 
   },
 
-  get: async () => {
+  getUserRecords: async (databaseUserData: DatabaseUserData, filter: string): Promise<DatabaseRecordData[]> => {
+
+    const recordFilter = `user = "${databaseUserData.id}"${filter == "" ? "" : ` && ${filter}`}`
+    const records = await db.collection('record').getFullList({
+      filter: recordFilter,
+    })
+
+    return records as DatabaseRecordData[]
 
   },
-
+  
   update: async () => {
 
   },
