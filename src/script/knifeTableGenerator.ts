@@ -3,9 +3,10 @@ import { record, setting, data } from '../database'
 import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
 import { DatabaseRecordData } from 'types/Database'
+import { Channel, TextChannel } from 'discord.js'
 
 
-export default async function generateKnifeTable(guildId: string): Promise<string> {
+export default async function generateKnifeTable(guildId: string): Promise<void> {
 
   const guild = await client.guilds.fetch(guildId)
   const members = await guild.members.fetch()
@@ -64,6 +65,25 @@ export default async function generateKnifeTable(guildId: string): Promise<strin
 
   tableText += `\n最後更新： ${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Hong_Kong", hour12: false })} 共\`${guildRecords.length}\`則記錄`
 
-  return tableText
+  // send out table
+  const tableChannel = await guild.channels.cache.get(guildSetting.knifeTable.channelId) as TextChannel
+  const message = await tableChannel.messages.fetch(guildSetting.knifeTable.messageId)
+
+  if (!message) {
+    // no message for you, send a new one
+    const newMessage = await tableChannel.send(tableText)
+    await setting.update(guildId, {
+      knifeTable: {
+        messageId: newMessage.id,
+        channelId: newMessage.channelId,
+        topMessage: guildSetting.knifeTable.topMessage
+      }
+    })
+  } else {
+    // update message
+    await message.edit(tableText)
+  }
+
+  return
 
 }
