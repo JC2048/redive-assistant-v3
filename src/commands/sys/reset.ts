@@ -66,10 +66,10 @@ export default {
         })
 
         // return if too many member
-        if (guildMemberIds.length > 30) {
-          await interaction.editReply({ content: `成員人數超過30名! 請檢查擁有身份組的成員!`, components: [] });
-          return
-        }
+        // if (guildMemberIds.length > 30) {
+        //   await interaction.editReply({ content: `成員人數超過30名! 請檢查擁有身份組的成員!`, components: [] });
+        //   return
+        // }
 
         // perform init on db data
         await dbData.init(interaction.guildId!)
