@@ -58,7 +58,7 @@ export default {
       )
     } catch (e) {
       console.log("[ERROR] Error while updating guild setting for guild " + guildId)
-      console.log(e)
+      console.error(e)
     }
   },
 

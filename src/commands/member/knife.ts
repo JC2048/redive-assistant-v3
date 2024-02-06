@@ -79,6 +79,7 @@ export default {
       }
       const response = await record.add(interaction.guildId, interaction.user.id, {
         user: userData.id,
+        guildId: interaction.guildId,
         week: args.week - 1,
         boss: args.boss,
         category: args.category,

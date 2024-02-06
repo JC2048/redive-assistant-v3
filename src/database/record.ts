@@ -16,18 +16,40 @@ export default {
 
   },
 
-  getUserRecords: async (databaseUserData: DatabaseUserData, filter: string): Promise<DatabaseRecordData[]> => {
+  getGuildRecords: async(guildId: string, filter?: string): Promise<DatabaseRecordData[]> => {
+    
+    const recordFilter = !!filter ? `guildId = "${guildId}" && ${filter}` : `guildId = "${guildId}"`
+    const records = await db.collection('record').getFullList<DatabaseRecordData>({
+      filter: recordFilter
+    })
 
-    const recordFilter = `user = "${databaseUserData.id}"${filter == "" ? "" : ` && ${filter}`}`
-    const records = await db.collection('record').getFullList({
+    return records
+
+  },
+
+  getUserRecords: async (databaseUserData: DatabaseUserData, filter?: string): Promise<DatabaseRecordData[]> => {
+
+    const recordFilter = `user = "${databaseUserData.id}"${filter == "" || filter == undefined ? "" : ` && ${filter}`}`
+    const records = await db.collection('record').getFullList<DatabaseRecordData>({
       filter: recordFilter,
     })
 
-    return records as DatabaseRecordData[]
+    return records
 
   },
-  
-  update: async () => {
+
+  update: async (id: string, data: Partial<RecordData>): Promise<DatabaseRecordData> => {
+
+    try {
+
+      const record = await db.collection('record').update<DatabaseRecordData>(id, data)
+      return record
+
+    } catch (e) {
+
+      console.log("[ERROR] Error while updating record " + id)
+      console.error(e)
+    }
 
   },
 

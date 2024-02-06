@@ -1,6 +1,6 @@
 import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
 import dotenv from 'dotenv';
-import PocketBase from 'pocketbase'
+import PocketBase from 'pocketbase';
 
 import config from "./config";
 
@@ -20,7 +20,7 @@ const client = new Client({
 });
 
 
-const db = new PocketBase(process.env.DB_ADDRESS)
+const db: PocketBase = new PocketBase(process.env.DB_ADDRESS)
 const settings = new Map<string, DatabaseGuildSetting>()
 
 console.log(`Database at ${process.env.DB_ADDRESS}`)
