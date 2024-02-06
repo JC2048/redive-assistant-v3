@@ -88,7 +88,7 @@ export default {
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(recordSelect)
 
-      const response = await interaction.editReply({
+      const userSelection = await interaction.editReply({
         content: `請選擇一則報刀紀錄：指令會在30秒後取消。`,
         components: [row]
       })
@@ -97,21 +97,42 @@ export default {
 
       try {
 
-        const userSelectedRecord = await response.awaitMessageComponent({
-          componentType: ComponentType.StringSelect,
+        const response = await userSelection.awaitMessageComponent({
           filter: collectorFilter,
+          componentType: ComponentType.StringSelect,
           time: 30_000
         })
 
+        if (response.customId == interaction.id + "record_select") {
+          selectedRecordId = response.values[0]
+        } else {
+          throw new Error("Invalid Selection")
+        }
+
       } catch (e) {
+
+        await interaction.editReply({
+          content: "已取消。",
+          components: []
+        })
+        return
 
       }
 
+      // update the record
 
+      const updatedRecord = await record.update(selectedRecordId, {
+        isCompleted: true
+      })
+
+      await interaction.editReply({
+        content: "已回填報刀紀錄。\n" + `${updatedRecord.week + 1} ${updatedRecord.boss} ${updatedRecord.category}`,
+        components: []
+      })
+
+      
 
       // }
-
-
 
     })
   },
