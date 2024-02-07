@@ -53,14 +53,33 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
     // boss loop
     for (let j = 0; j < 5; j++) {
 
-      tableText += `${guildData.progress[j] === currentWeek - 1 ? "▶️" : guildData.progress[j] > currentWeek - 1 ? "✅" : "🕓"} ${parseChineseBossNumber(j + 1)}王 `
-      tableText += `${guildData.progress[j] === currentWeek - 1 ? `${guildData.hp[j]}萬` : guildData.progress[j] > currentWeek - 1 ? "" : `${config.hp[weekToStage(currentWeek)][j]}萬`}\n`
+      // initialize boss hp
+      let hp = guildData.progress[j] === currentRound ? guildData.hp[j] : config.hp[weekToStage(currentWeek) - 1][j]
+      let hpValid = true
 
+      // generate record text
+      const recordTextList: string[] = []
       for (const record of recordMatrix[i][j]) {
         const guildMember = members.get(record.userId)
-        const recordText = `${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`
-        tableText += ` ${ANSI.formatText(recordText, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE)}\n`
+        const recordText = `${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`} ${!!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`
+        recordTextList.push(` ${record.isLeftover ? "🔸" : "🔹"}${ANSI.formatText(recordText, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE)}\n`)
+
+        // evaluate total hp
+        if (record.damage > 0) {
+          hp -= record.damage
+        } else {
+          // set hp invalid if there are empty records
+          hpValid = false
+        }
       }
+
+      tableText += `${guildData.progress[j] === currentRound ? "▶️" : guildData.progress[j] > currentRound ? "✅" : "🕓"} ${parseChineseBossNumber(j + 1)}王 `
+      tableText += guildData.progress[j] <= currentRound
+        ? `${ANSI.formatText(hp.toString(), !hpValid ? ANSIForeColor.YELLOW : hp > 0 ? ANSIForeColor.GREEN : [ANSIBackColor.DEEP_BLUE, ANSIForeColor.RED], ANSIFontStyle.BOLD)}`
+        + (guildData.progress[j] === currentRound ? `/${config.hp[weekToStage(currentWeek) - 1][j]}萬\n` : "萬\n")
+        : "\n"
+      tableText += recordTextList.join("")
+
     }
     tableText += "\n"
   }

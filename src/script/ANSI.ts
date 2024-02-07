@@ -13,13 +13,13 @@ export enum ANSIForeColor {
 
 export enum ANSIBackColor {
 
-  BLACK = 40,
-  RED = 41,
-  GREEN = 42,
-  YELLOW = 43,
-  BLUE = 44,
-  MAGENTA = 45,
-  CYAN = 46,
+  DEEP_BLUE = 40,
+  ORANGE = 41,
+  MARBLE_BLUE = 42,
+  GREY_TURQUOISE = 43,
+  GRAY = 44,
+  INDIGO = 45,
+  LIGHT_GRAY = 46,
   WHITE = 47
 
 }
