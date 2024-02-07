@@ -13,10 +13,8 @@ export default {
 
     await interaction.deferReply()
 
-    const msg = await generateKnifeTable(interaction.guildId)
-
     await interaction.editReply({
-      content: msg,
+      content: "dev",
       ephemeral: true
     })
   },
