@@ -5,8 +5,9 @@ import config from '../config'
 import { DatabaseRecordData } from 'types/Database'
 import { Channel, TextChannel } from 'discord.js'
 
+import ANSI, { ANSIForeColor, ANSIBackColor, ANSIFontStyle } from '../script/ANSI'
 
-export default async function generateKnifeTable(guildId: string): Promise<void> {
+export default async function generateANSIKnifeTable(guildId: string): Promise<void> {
 
   const guild = await client.guilds.fetch(guildId)
   const members = await guild.members.fetch()
@@ -32,7 +33,7 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
   }
 
   // header
-  let tableText = `\`\`\`\n戰隊尚餘: 🔹${guildData.fullKnifeCount} 🔸${guildData.leftoverKnifeCount}\n`
+  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔹${guildData.fullKnifeCount} 🔸${guildData.leftoverKnifeCount}\n`
 
   for (let i = 0; i < 5; i++) {
 
@@ -57,7 +58,8 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
 
       for (const record of recordMatrix[i][j]) {
         const guildMember = members.get(record.userId)
-        tableText += `  ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}\n`
+        const recordText = `${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`
+        tableText += ` ${ANSI.formatText(recordText, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE)}\n`
       }
     }
     tableText += "\n"
