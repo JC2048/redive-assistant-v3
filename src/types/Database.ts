@@ -65,6 +65,7 @@ export interface RecordData {
   category: KnifeCategory
   isLeftover: boolean
   isCompleted: boolean
+  damage: number
 }
 
 interface DatabaseFields {
