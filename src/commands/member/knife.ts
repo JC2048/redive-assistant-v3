@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, GuildMember } from 'discord.js';
 
 import { KnifeCategory } from '../../Enums';
 import { argumentParser } from '../../script/argumentParser';
@@ -6,6 +6,8 @@ import { argumentParser } from '../../script/argumentParser';
 import { user, record } from '../../database';
 
 import { knifeCategoryTranslator } from '../../script/util';
+import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
+import { RecordData } from '../../types/Database';
 
 /*
 Allow user to submit a knife record to the db
@@ -48,7 +50,7 @@ const data = new SlashCommandBuilder()
   )
   .addIntegerOption(option =>
     option
-      .setName('補償刀')
+      .setName('補償')
       .setDescription('補償刀')
       .setRequired(true)
       .setChoices(
@@ -58,8 +60,8 @@ const data = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
-      .setName('備註')
-      .setDescription('備註')
+      .setName('傷害')
+      .setDescription('傷害')
       .setRequired(false)
   )
 
@@ -77,7 +79,8 @@ export default {
         })
         return
       }
-      const response = await record.add(interaction.guildId, interaction.user.id, {
+
+      const recordData: RecordData = {
         user: userData.id,
         guildId: interaction.guildId,
         userId: interaction.user.id,
@@ -85,12 +88,17 @@ export default {
         boss: args.boss,
         category: args.category,
         isLeftover: args.leftover === 1,
-        isCompleted: false
-      })
+        isCompleted: false,
+        damage: args.damage ?? 0,
+      }
+
+      const response = await record.add(interaction.guildId, interaction.user.id, recordData)
       if (response) {
         await interaction.editReply({
-          content: `已新增報刀紀錄!\n${args.week}周${args.boss}王 ${knifeCategoryTranslator(args.category)} ${args.leftover === 1 ? '(補償)' : ''} ${!!args.note ? `\n${args.note}` : ''}`,
+          content: `已新增報刀紀錄!`,
+          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
         })
+
         // TODO use embed message
       } else {
         await interaction.editReply({

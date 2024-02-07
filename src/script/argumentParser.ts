@@ -6,6 +6,7 @@ const argumentNameMap: Record<string, string> = {
   王: "boss",
   種類: "category",
   補償刀: "leftover",
+  傷害: "damage",
   備註: "note",
   成員: "user",
 
