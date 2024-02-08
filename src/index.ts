@@ -107,10 +107,12 @@ client.once(Events.ClientReady, async (readyClient) => {
     // map setting to meta
 
     settings.forEach(async (setting) => {
-      // set nickname
+
       const guild = await client.guilds.fetch(setting.guildId)
-      const me = await guild.members.fetchMe()
-      await me.setNickname(setting.bot.nickname)
+
+      // // set nickname
+      // const me = await guild.members.fetchMe()
+      // await me.setNickname(setting.bot.nickname)
 
       // fetch member
       await guild.members.fetch()
