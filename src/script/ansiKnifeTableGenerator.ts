@@ -84,7 +84,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
     tableText += "\n"
   }
 
-  tableText += `\n最後更新： ${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Hong_Kong", hour12: false })} 共 ${guildRecords.length} 則記錄\`\`\``
+  tableText += `\n最後更新: ${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Hong_Kong", hour12: false })} 共 ${guildRecords.length} 則記錄\`\`\``
 
   // send out table
   const tableChannel = await guild.channels.cache.get(guildSetting.knifeTable.channelId) as TextChannel
@@ -104,6 +104,12 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
     // update message
     await message.edit(tableText)
   }
+
+  // update nickname
+  await guild.members.me.setNickname(
+    `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${Math.min(...guildData.progress) + 1} - ${Math.max(...guildData.progress) + 1}周` : ""}`
+    )
+
 
   return
 
