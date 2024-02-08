@@ -28,6 +28,17 @@ export default {
     
   },
 
+  updateByUser: async(userData: DatabaseUserData, data: Partial<UserData>) => {
+
+    try {
+      await db.collection('user').update(userData.id, data)
+    } catch (e) {
+      console.log("[ERROR] Error while updating user data for user " + userData.userId)
+      console.error(e)
+    }
+
+  },
+
   guildDeleteAll: async (guildId: string) => {
 
     const guildUserDataList = await db.collection('user').getFullList({
