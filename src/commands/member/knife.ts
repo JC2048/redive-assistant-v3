@@ -3,7 +3,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, GuildMember } from 'd
 import { KnifeCategory } from '../../Enums';
 import { argumentParser } from '../../script/argumentParser';
 
-import { user, record } from '../../database';
+import { user, record, data as dbData } from '../../database';
 
 import { knifeCategoryTranslator } from '../../script/util';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
@@ -71,19 +71,55 @@ export default {
 
     await argumentParser(interaction, data.options, async (interaction, args) => {
 
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
+
+      // handle condition
+
       const userData = await user.get(interaction.guildId, interaction.user.id)
       if (userData == null) {
         await interaction.editReply({
           content: '無法尋找你的成員紀錄!\n請向會長或管理員回報!',
+        })
+        // TODO init user??
+        return
+      }
+
+      // criteria check
+      /*
+      1.  Week count
+          The report week should be limited to max week + 2
+
+      2.  User knife count: 
+          Normal: knifeCount > 0
+          Leftover: knifeCount + leftoverCount > 0
+      */
+
+      // 2
+      if (userData.knifeCount + (args.leftover === 1 ? userData.leftoverCount : 0) <= 0) {
+        await interaction.editReply({
+          content: '出刀數已經用完!',
+        })
+        return
+      }
+
+      // 1
+      const guildData = await dbData.get(interaction.guildId!)
+      if (args.week - 1 < guildData.progress[args.boss - 1]) {
+        await interaction.editReply({
+          content: `不能在已過去的周目新增報刀!`,
+        })
+        return
+      } else if (args.week - 1 > Math.min(4, Math.max(...guildData.progress) - Math.min(...guildData.progress) + 1)) {
+        await interaction.editReply({
+          content: `報刀周目不能大幅超越目前進度!\n請參考報刀表上的周目進行報刀!`,
         })
         return
       }
 
       const recordData: RecordData = {
         user: userData.id,
-        guildId: interaction.guildId,
-        userId: interaction.user.id,
+        // guildId: interaction.guildId,
+        // userId: interaction.user.id,
         week: args.week - 1,
         boss: args.boss,
         category: args.category,
@@ -92,14 +128,16 @@ export default {
         damage: args.damage ?? 0,
       }
 
-      const response = await record.add(interaction.guildId, interaction.user.id, recordData)
+      const response = await record.add(recordData)
       if (response) {
         await interaction.editReply({
           content: `已新增報刀紀錄!`,
-          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
         })
 
-        // TODO use embed message
+        await interaction.followUp({
+          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember)]
+        })
+
       } else {
         await interaction.editReply({
           content: '無法新增報刀紀錄!\n請向會長或管理員回報!',
