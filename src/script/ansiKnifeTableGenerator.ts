@@ -2,7 +2,7 @@ import { client } from '../index'
 import { record, setting, data } from '../database'
 import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
-import { DatabaseRecordData } from 'types/Database'
+import { DatabaseRecordData, ExpandedDatabaseRecordData } from 'types/Database'
 import { Channel, TextChannel } from 'discord.js'
 
 import ANSI, { ANSIForeColor, ANSIBackColor, ANSIFontStyle } from '../script/ANSI'
@@ -25,7 +25,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   const guildRecords = await record.getGuildRecords(guildId, recordFilter)
 
   // generate traversed record matrix
-  const recordMatrix: DatabaseRecordData[][][] = new Array(tableWeekCount).fill(0).map(() => new Array(5).fill(0).map(() => []))
+  const recordMatrix: ExpandedDatabaseRecordData[][][] = new Array(tableWeekCount).fill(0).map(() => new Array(5).fill(0).map(() => []))
 
   for (const record of guildRecords) {
     const recordTableWeek = record.week - minProgress;
@@ -60,7 +60,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
       // generate record text
       const recordTextList: string[] = []
       for (const record of recordMatrix[i][j]) {
-        const guildMember = members.get(record.userId)
+        const guildMember = members.get(record.expand.user.userId)
         const recordText = `${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`} ${!!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`
         recordTextList.push(` ${record.isLeftover ? "🔸" : "🔹"}${ANSI.formatText(recordText, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE)}\n`)
 

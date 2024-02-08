@@ -58,8 +58,8 @@ export interface UserData {
 
 export interface RecordData {
   user: string
-  guildId: string
-  userId: string
+  // guildId: string
+  // userId: string
   week: number
   boss: 1 | 2 | 3 | 4 | 5
   category: KnifeCategory
@@ -78,5 +78,11 @@ interface DatabaseFields {
 }
 
 export type DatabaseRecordData = DatabaseFields & RecordData
+export type ExpandedDatabaseRecordData = DatabaseRecordData & {
+  expand: {
+    user: DatabaseUserData
+  }
+}
+
 export type DatabaseUserData = DatabaseFields & UserData
 

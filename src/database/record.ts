@@ -1,4 +1,4 @@
-import { RecordData, UserData, DatabaseUserData, DatabaseRecordData } from '../types/Database'
+import { RecordData, UserData, DatabaseUserData, DatabaseRecordData, ExpandedDatabaseRecordData } from '../types/Database'
 import { db } from '../index'
 
 export default {
@@ -16,12 +16,13 @@ export default {
 
   },
 
-  getGuildRecords: async(guildId: string, filter?: string): Promise<DatabaseRecordData[]> => {
+  getGuildRecords: async(guildId: string, filter?: string): Promise<ExpandedDatabaseRecordData[]> => {
     
-    const recordFilter = !!filter ? `guildId = "${guildId}" && ${filter}` : `guildId = "${guildId}"`
-    const records = await db.collection('record').getFullList<DatabaseRecordData>({
+    const recordFilter = !!filter ? `user.guildId = "${guildId}" && ${filter}` : `user.guildId = "${guildId}"`
+    const records = await db.collection('record').getFullList<ExpandedDatabaseRecordData>({
       filter: recordFilter,
-      sort: "+updated"
+      sort: "+updated",
+      expand: "user"
     })
 
     return records
