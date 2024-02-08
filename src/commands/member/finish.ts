@@ -57,7 +57,7 @@ export default {
 
       // perform query
       const filter = `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`;
-      const recordList = await record.getUserRecords(userData, filter)
+      const recordList = await record.getUserRecordsByUser(userData, filter)
 
       if (recordList.length === 0) {
         await interaction.editReply({
