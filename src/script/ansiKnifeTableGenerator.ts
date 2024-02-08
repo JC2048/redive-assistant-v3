@@ -9,8 +9,8 @@ import ANSI, { ANSIForeColor, ANSIBackColor, ANSIFontStyle } from '../script/ANS
 
 export default async function generateANSIKnifeTable(guildId: string): Promise<void> {
 
-  const guild = await client.guilds.fetch(guildId)
-  const members = await guild.members.fetch()
+  const guild = client.guilds.cache.get(guildId)
+  const members = guild.members.cache
 
   const guildData = await data.get(guildId)
   const guildSetting = await setting.get(guildId)
