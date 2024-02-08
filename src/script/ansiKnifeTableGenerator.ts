@@ -19,7 +19,10 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   const maxProgress = Math.max(...guildData.progress) + 2
 
   // always generate at least 3 rounds
-  const tableWeekCount = Math.max(3, maxProgress - minProgress + 1)
+  // const tableWeekCount = Math.max(3, maxProgress - minProgress + 1)
+
+  // generate at most 4 rounds and at least 3 rounds
+  const tableWeekCount = Math.min(4, maxProgress - minProgress + 1)
 
   const recordFilter = `week >= ${minProgress} && week <= ${minProgress + tableWeekCount - 1}`
   const guildRecords = await record.getGuildRecords(guildId, recordFilter)
@@ -100,15 +103,18 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
         topMessage: guildSetting.knifeTable.topMessage
       }
     })
+    console.log(`Table length: ${newMessage.content.length}`)
+
   } else {
     // update message
-    await message.edit(tableText)
+    const newMessage = await message.edit(tableText)
+    console.log(`Table length: ${newMessage.content.length}`)
   }
 
   // update nickname
   await guild.members.me.setNickname(
     `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${Math.min(...guildData.progress) + 1} - ${Math.max(...guildData.progress) + 1}周` : ""}`
-    )
+  )
 
 
   return
