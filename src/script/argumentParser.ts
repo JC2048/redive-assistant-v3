@@ -5,6 +5,7 @@ const argumentNameMap: Record<string, string> = {
   周目: "week",
   王: "boss",
   種類: "category",
+  補償: "leftover",
   補償刀: "leftover",
   傷害: "damage",
   備註: "note",
