@@ -97,7 +97,7 @@ export default {
       // 2
       if (userData.knifeCount + (args.leftover === 1 ? userData.leftoverCount : 0) <= 0) {
         await interaction.editReply({
-          content: '出刀數已經用完!',
+          content: '今天的出刀數已經用完!',
         })
         return
       }
@@ -135,7 +135,7 @@ export default {
         })
 
         await interaction.followUp({
-          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember)]
+          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
         })
 
       } else {
