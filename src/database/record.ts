@@ -3,7 +3,7 @@ import { db } from '../index'
 
 export default {
 
-  add: async (guildId: string, userId: string, data: RecordData): Promise<boolean> => {
+  add: async (data: RecordData): Promise<boolean> => {
 
     try {
       await db.collection('record').create(data)
@@ -29,7 +29,7 @@ export default {
 
   },
 
-  getUserRecords: async (databaseUserData: DatabaseUserData, filter?: string): Promise<DatabaseRecordData[]> => {
+  getUserRecordsByUser: async (databaseUserData: DatabaseUserData, filter?: string): Promise<DatabaseRecordData[]> => {
 
     const recordFilter = `user = "${databaseUserData.id}"${filter == "" || filter == undefined ? "" : ` && ${filter}`}`
     const records = await db.collection('record').getFullList<DatabaseRecordData>({
@@ -39,6 +39,17 @@ export default {
 
     return records
 
+  },
+
+  getUserRecordsById: async(guildId: string, userId: string, filter?: string): Promise<DatabaseRecordData[]> => {
+
+    const recordFilter = `user.userId = "${userId}" && user.guildId = "${guildId}"${filter == "" || filter == undefined ? "" : ` && ${filter}`}`
+    const records = await db.collection('record').getFullList<DatabaseRecordData>({
+      filter: recordFilter,
+      sort: "+updated"
+    })
+
+    return records
   },
 
   update: async (id: string, data: Partial<RecordData>): Promise<DatabaseRecordData> => {
