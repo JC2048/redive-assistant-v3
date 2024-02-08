@@ -43,7 +43,7 @@ export default {
       )
     } catch (e) {
       console.log("[ERROR] Error while updating guild data for guild " + guildId)
-      console.log(e)
+      console.error(e)
     }
   },
 
@@ -54,7 +54,7 @@ export default {
       return data
     } catch (e) {
       console.log("[ERROR] Error while getting guild data for guild " + guildId)
-      console.log(e)
+      console.error(e)
     }
   }
 }

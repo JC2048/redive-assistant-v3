@@ -69,7 +69,7 @@ export default {
       return setting as DatabaseGuildSetting
     } catch (e) {
       console.log("[ERROR] Error while getting guild setting for guild " + guildId)
-      console.log(e)
+      console.error(e)
     }
   }
 }
