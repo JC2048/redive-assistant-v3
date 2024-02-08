@@ -31,7 +31,7 @@ export function recordEmbedGenerator(record: DatabaseRecordData | RecordData, gu
     })
     .setDescription(overrides.description ?? `${knifeCategoryTranslator(record.category)} ${overrides.damage ?? record.damage}萬`)
     .setTimestamp()
-    .setColor(overrides.color ?? record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL)
+    .setColor(overrides.color ?? (record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL))
 
   /*
 
