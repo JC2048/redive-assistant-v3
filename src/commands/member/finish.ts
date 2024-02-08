@@ -1,8 +1,9 @@
-import { ActionRowBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType } from 'discord.js';
+import { ActionRowBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType, GuildMember } from 'discord.js';
 import { argumentParser } from '../../script/argumentParser';
 import { knifeCategoryTranslator } from '../../script/util';
 
 import { data as dbData, user, record } from '../../database';
+import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
 
 /*
 Allow user to complete a knife record to the db
@@ -30,6 +31,12 @@ const data = new SlashCommandBuilder()
         { name: '五王', value: 5 },
       )
   )
+  .addIntegerOption(option =>
+    option
+      .setName('傷害')
+      .setDescription('傷害')
+      .setRequired(true)
+  )
 // .addBooleanOption(option =>
 //   option
 //     .setName('補償刀')
@@ -43,7 +50,7 @@ export default {
   execute: async (interaction) => {
     await argumentParser(interaction, data.options, async (interaction, args) => {
 
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
       const userData = await user.get(interaction.guildId, interaction.user.id)
       if (userData == null) {
         await interaction.editReply({
@@ -52,16 +59,49 @@ export default {
         return
       }
 
+      // criteria check
+      /*
+      1.  Uncompleted record exists on current round of selected boss and of suitable week
+      2.  User has enough knife count
+          Normal knife: knifeCount > 0
+          Leftover knife: leftoverCount > 0
+      3.  args.damage should be reasonable
+      */
+
+      // 3
+      if (args.damage < 0) {
+        await interaction.editReply({
+          content: '傷害不能為負數!'
+        })
+        return
+      }
+
       const guildData = await dbData.get(interaction.guildId)
       const bossRound = guildData.progress[args.boss - 1]
 
-      // perform query
-      const filter = `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`;
-      const recordList = await record.getUserRecordsByUser(userData, filter)
+      // 2
+      if (userData.knifeCount === 0 && userData.leftoverCount === 0) {
+        await interaction.editReply({
+          content: '今天的出刀數已經用完!'
+        })
+        return
+      }
+      // const filter = `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`;
+      const filter = (() => {
+        if (userData.knifeCount === 0)
+          return `boss = ${args.boss} && week = ${bossRound} && isCompleted = false && isLeftover = true`
+        else if (userData.leftoverCount === 0)
+          return `boss = ${args.boss} && week = ${bossRound} && isCompleted = false && isLeftover = false`
+        else
+          return `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`
+      })()
 
+      const recordList = await record.getByUser(userData, filter)
+
+      // 1
       if (recordList.length === 0) {
         await interaction.editReply({
-          content: `在${bossRound + 1}周${args.boss}王沒有對應的報刀！\n請確定對應周目已有報刀紀錄，並且目前周目進度正確。`
+          content: `剩餘刀數: 🔹${userData.knifeCount} | 🔸${userData.leftoverCount}\n在${bossRound + 1}周${args.boss}王沒有對應的報刀！\n請檢查並確認:\n- 目前周目進度正確\n- 已有正確報刀紀錄\n- 報刀的完整/補償沒有錯誤`
         })
         return
       }
@@ -85,11 +125,13 @@ export default {
               .setValue(record.id)
           )
         ])
+        .setMinValues(1)
+        .setMaxValues(1)
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(recordSelect)
 
       const userSelection = await interaction.editReply({
-        content: `請選擇一則報刀紀錄：指令會在30秒後取消。`,
+        content: `剩餘刀數: 🔹${userData.knifeCount} | 🔸${userData.leftoverCount}\n指令會在30秒後取消。`,
         components: [row]
       })
 
@@ -120,17 +162,32 @@ export default {
       }
 
       // update the record
-
       const updatedRecord = await record.update(selectedRecordId, {
-        isCompleted: true
+        isCompleted: true,
+        damage: args.damage
       })
+
+      // update user data
+      if (updatedRecord.isLeftover) {
+        await user.updateByUser(userData, {
+          leftoverCount: Math.max(userData.leftoverCount - 1, 0)
+        })
+      } else {
+        await user.updateByUser(userData, {
+          knifeCount: Math.max(userData.knifeCount - 1, 0)
+        })
+      }
 
       await interaction.editReply({
-        content: "已回填報刀紀錄。\n" + `${updatedRecord.week + 1} ${updatedRecord.boss} ${updatedRecord.category}`,
+        content: "已回填報刀紀錄。",
         components: []
       })
-
-      
+      await interaction.followUp({
+        embeds: [recordEmbedGenerator(updatedRecord, interaction.member as GuildMember, {
+          isCompleted: true,
+          color: RecordColor.COMPLETE
+        })]
+      })
 
       // }
 
