@@ -36,7 +36,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   }
 
   // header
-  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔹${guildData.fullKnifeCount} 🔸${guildData.leftoverKnifeCount}\n`
+  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔹${guildData.knifeCount} 🔸${guildData.leftoverCount}\n`
 
   for (let i = 0; i < 5; i++) {
 

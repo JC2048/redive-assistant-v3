@@ -40,8 +40,8 @@ export interface DatabaseGuildData extends DatabaseFields {
   progress: [number, number, number, number, number]
   hp: [number, number, number, number, number]
 
-  fullKnifeCount: number
-  leftoverKnifeCount: number
+  knifeCount: number
+  leftoverCount: number
 
 }
 

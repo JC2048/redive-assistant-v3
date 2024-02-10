@@ -32,7 +32,7 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
   }
 
   // header
-  let tableText = `\`\`\`\n戰隊尚餘: 🔹${guildData.fullKnifeCount} 🔸${guildData.leftoverKnifeCount}\n`
+  let tableText = `\`\`\`\n戰隊尚餘: 🔹${guildData.knifeCount} 🔸${guildData.leftoverCount}\n`
 
   for (let i = 0; i < 5; i++) {
 

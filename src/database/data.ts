@@ -12,8 +12,8 @@ export default {
       progress: [0, 0, 0, 0, 0],
       hp: config.hp[0] as [number, number, number, number, number],
 
-      fullKnifeCount: 90,
-      leftoverKnifeCount: 0
+      knifeCount: 90,
+      leftoverCount: 0
 
     }
 
