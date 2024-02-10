@@ -86,6 +86,7 @@ export default {
         })
         return
       }
+
       // const filter = `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`;
       const filter = (() => {
         if (userData.knifeCount === 0)
@@ -167,14 +168,21 @@ export default {
         damage: args.damage
       })
 
-      // update user data
+      // update user data & guild data
       if (updatedRecord.isLeftover) {
         await user.updateByUser(userData, {
           leftoverCount: Math.max(userData.leftoverCount - 1, 0)
         })
+        await dbData.update(interaction.guildId, {
+          leftoverCount: Math.max(guildData.leftoverCount - 1, 0)
+        })
+
       } else {
         await user.updateByUser(userData, {
           knifeCount: Math.max(userData.knifeCount - 1, 0)
+        })
+        await dbData.update(interaction.guildId, {
+          knifeCount: Math.max(guildData.knifeCount - 1, 0)
         })
       }
 
