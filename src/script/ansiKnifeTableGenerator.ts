@@ -2,8 +2,8 @@ import { client } from '../index'
 import { record, setting, data } from '../database'
 import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
-import { DatabaseRecordData, ExpandedDatabaseRecordData } from 'types/Database'
-import { Channel, TextChannel } from 'discord.js'
+import { ExpandedDatabaseRecordData } from 'types/Database'
+import { TextChannel } from 'discord.js'
 
 import ANSI, { ANSIForeColor, ANSIBackColor, ANSIFontStyle } from '../script/ANSI'
 
@@ -69,7 +69,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
 
         // evaluate total hp
         if (record.damage > 0) {
-          hp -= record.damage
+          if (!record.isCompleted) hp -= record.damage
         } else {
           // set hp invalid if there are empty records
           hpValid = false
