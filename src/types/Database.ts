@@ -37,8 +37,8 @@ export interface DatabaseGuildData extends DatabaseFields {
 
   guildId: string
 
-  progress: [number, number, number, number, number]
-  hp: [number, number, number, number, number]
+  progress: [number, number, number, number, number] | number[]
+  hp: [number, number, number, number, number] | number[]
 
   knifeCount: number
   leftoverCount: number
@@ -54,6 +54,7 @@ export interface UserData {
   // record_ids: string[]
   knifeCount: number
   leftoverCount: number
+  record: string[]
 }
 
 export interface RecordData {
@@ -79,10 +80,16 @@ interface DatabaseFields {
 
 export type DatabaseRecordData = DatabaseFields & RecordData
 export type ExpandedDatabaseRecordData = DatabaseRecordData & {
-  expand: {
-    user: DatabaseUserData
+  readonly expand: {
+    readonly user: DatabaseUserData
   }
 }
 
 export type DatabaseUserData = DatabaseFields & UserData
+
+export type ExpandedDatabaseUserData = DatabaseUserData & {
+  readonly expand: {
+    readonly record: DatabaseRecordData | DatabaseRecordData[]
+  }
+}
 

@@ -1,17 +1,27 @@
-import { UserData, DatabaseUserData } from '../types/Database'
+import { UserData, DatabaseUserData, ExpandedDatabaseUserData } from '../types/Database'
 import { db } from '../index'
+
+async function get(guildId: string, userId: string): Promise<DatabaseUserData | undefined>;
+async function get(guildId: string, userId: string, expand: true): Promise<ExpandedDatabaseUserData | undefined>;
+async function get(guildId: string, userId: string, expand?: true): Promise<DatabaseUserData | ExpandedDatabaseUserData | undefined> {
+  const data = await db.collection('user').getFirstListItem(
+    `userId = "${userId}" && guildId = "${guildId}"`,
+    expand ? { expand: 'record' } : undefined
+  )
+  if (!!data) return data as DatabaseUserData | ExpandedDatabaseUserData
+  else return undefined
+}
 
 export default {
 
   create: async (guildId: string, userId: string) => {
 
     const data: UserData = {
-
       userId: userId,
       guildId: guildId,
       knifeCount: 3,
-      leftoverCount: 0
-
+      leftoverCount: 0,
+      record: []
     }
 
     await db.collection('user').create(
@@ -20,15 +30,16 @@ export default {
 
   },
 
-  get: async (guildId: string, userId: string): Promise<DatabaseUserData | null> => {
+  // get: async (guildId: string, userId: string): Promise<DatabaseUserData | undefined> => {
 
-    const data = await db.collection('user').getFirstListItem(`userId = "${userId}" && guildId = "${guildId}"`)
-    if (!!data) return data as DatabaseUserData
-    return null
-    
-  },
+  //   const data = await db.collection('user').getFirstListItem(`userId = "${userId}" && guildId = "${guildId}"`)
+  //   if (!!data) return data as DatabaseUserData
+  //   else return undefined
 
-  updateByUser: async(userData: DatabaseUserData, data: Partial<UserData>) => {
+  // },
+  get,
+
+  updateByUser: async (userData: DatabaseUserData, data: Partial<UserData>) => {
 
     try {
       await db.collection('user').update(userData.id, data)
