@@ -8,6 +8,7 @@ import { user, record, data as dbData } from '../../database';
 import { knifeCategoryTranslator } from '../../script/util';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
 import { RecordData } from '../../types/Database';
+import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
 
 /*
 Allow user to submit a knife record to the db
@@ -74,7 +75,7 @@ export default {
       await interaction.deferReply({ ephemeral: true })
 
       // handle condition
-
+      console.log("[/knife] getting user data")
       const userData = await user.get(interaction.guildId, interaction.user.id)
       if (userData == null) {
         await interaction.editReply({
@@ -103,6 +104,7 @@ export default {
       }
 
       // 1
+      console.log("[/knife] getting guild data")
       const guildData = await dbData.get(interaction.guildId!)
       if (args.week - 1 < guildData.progress[args.boss - 1]) {
         await interaction.editReply({
@@ -128,21 +130,30 @@ export default {
         damage: args.damage ?? 0,
       }
 
-      const response = await record.add(recordData)
-      if (response) {
-        await interaction.editReply({
-          content: `已新增報刀紀錄!`,
-        })
+      const newRecord = await record.add(recordData)
+      if (!newRecord) {
 
-        await interaction.followUp({
-          embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
-        })
-
-      } else {
         await interaction.editReply({
           content: '無法新增報刀紀錄!\n請向會長或管理員回報!',
         })
+        return
+
       }
+
+      // update user data
+      await user.updateByUser(userData, {
+        record: [...userData.record, newRecord.id],
+      })
+
+      interaction.editReply({
+        content: `已新增報刀紀錄!`,
+      })
+
+      interaction.followUp({
+        embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
+      })
+
+      generateANSIKnifeTable(interaction.guildId)
 
     })
   },
