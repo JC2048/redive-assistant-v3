@@ -3,15 +3,15 @@ import { db } from '../index'
 
 export default {
 
-  add: async (data: RecordData): Promise<boolean> => {
+  add: async (data: RecordData): Promise<DatabaseRecordData | null> => {
 
     try {
-      await db.collection('record').create(data)
-      return true
+      const record = await db.collection('record').create<DatabaseRecordData>(data)
+      return record
 
     } catch (e) {
       console.error(e)
-      return false
+      return
     }
 
   },
