@@ -4,6 +4,7 @@ import { knifeCategoryTranslator } from '../../script/util';
 
 import { data as dbData, user, record } from '../../database';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
+import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
 
 /*
 Allow user to complete a knife record to the db
@@ -169,11 +170,17 @@ export default {
       })
 
       // update user data & guild data
+      const updatedHp = [...guildData.hp]
+      updatedHp[args.boss - 1] = Math.max(guildData.hp[args.boss - 1] - args.damage, 0)
+
+      // TODO trigger NEXT event since hp is below 0
+
       if (updatedRecord.isLeftover) {
         await user.updateByUser(userData, {
           leftoverCount: Math.max(userData.leftoverCount - 1, 0)
         })
         await dbData.update(interaction.guildId, {
+          hp: updatedHp,
           leftoverCount: Math.max(guildData.leftoverCount - 1, 0)
         })
 
@@ -182,20 +189,22 @@ export default {
           knifeCount: Math.max(userData.knifeCount - 1, 0)
         })
         await dbData.update(interaction.guildId, {
+          hp: updatedHp,
           knifeCount: Math.max(guildData.knifeCount - 1, 0)
         })
       }
 
-      await interaction.editReply({
+      interaction.editReply({
         content: "已回填報刀紀錄。",
         components: []
       })
-      await interaction.followUp({
+      interaction.followUp({
         embeds: [recordEmbedGenerator(updatedRecord, interaction.member as GuildMember, {
           isCompleted: true,
           color: RecordColor.COMPLETE
         })]
       })
+      generateANSIKnifeTable(interaction.guildId)
 
       // }
 
