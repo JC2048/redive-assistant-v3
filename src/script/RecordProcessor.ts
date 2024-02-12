@@ -24,13 +24,13 @@ export function recordEmbedGenerator(record: DatabaseRecordData | RecordData, gu
 
   const embed = new EmbedBuilder()
     .setAuthor({
-      name: `${overrides.name ?? guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} | `
-        + `${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ?? overrides.isCompleted ?? false ? "✅" : ""}`
-        + `${record.week + 1}周 ${record.boss}王`,
+      name: `${overrides.name ?? guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} |`
+        + ` ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ?? overrides.isCompleted ?? false ? "✅" : ""}`
+        + ` ${record.week + 1}周 ${record.boss}王`,
       iconURL: guildMember.displayAvatarURL() ?? guildMember.user.avatarURL()
     })
     .setDescription(overrides.description ?? `${knifeCategoryTranslator(record.category)} ${overrides.damage ?? record.damage}萬`)
-    .setTimestamp()
+    // .setTimestamp()
     .setColor(overrides.color ?? (record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL))
 
   /*
