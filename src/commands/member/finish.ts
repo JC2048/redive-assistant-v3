@@ -103,7 +103,7 @@ export default {
       // 1
       if (recordList.length === 0) {
         await interaction.editReply({
-          content: `剩餘刀數: 🔹${userData.knifeCount} | 🔸${userData.leftoverCount}\n在${bossRound + 1}周${args.boss}王沒有對應的報刀！\n請檢查並確認:\n- 目前周目進度正確\n- 已有正確報刀紀錄\n- 報刀的完整/補償沒有錯誤`
+          content: `剩餘刀數: 🔷${userData.knifeCount} | 🔶${userData.leftoverCount}\n在${bossRound + 1}周${args.boss}王沒有對應的報刀！\n請檢查並確認:\n- 目前周目進度正確\n- 已有正確報刀紀錄\n- 報刀的完整/補償沒有錯誤`
         })
         return
       }
@@ -122,7 +122,7 @@ export default {
         .addOptions([
           ...recordList.map((record) =>
             new StringSelectMenuOptionBuilder()
-              .setLabel(`${record.isLeftover ? "🔸" : "🔹"}${record.week + 1}周${record.boss}王`)
+              .setLabel(`${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
               .setDescription(`${knifeCategoryTranslator(record.category)}`)
               .setValue(record.id)
           )
@@ -132,8 +132,8 @@ export default {
 
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(recordSelect)
 
-      const userSelection = await interaction.editReply({
-        content: `剩餘刀數: 🔹${userData.knifeCount} | 🔸${userData.leftoverCount}\n指令會在30秒後取消。`,
+      const recordSelectionMessage = await interaction.editReply({
+        content: `剩餘刀數: 🔷${userData.knifeCount} | 🔶${userData.leftoverCount}\n請注意：選擇報刀後不能取消！\n指令會在30秒後取消。`,
         components: [row]
       })
 
@@ -141,7 +141,7 @@ export default {
 
       try {
 
-        const response = await userSelection.awaitMessageComponent({
+        const response = await recordSelectionMessage.awaitMessageComponent({
           filter: collectorFilter,
           componentType: ComponentType.StringSelect,
           time: 30_000
@@ -195,7 +195,7 @@ export default {
       }
 
       interaction.editReply({
-        content: "已回填報刀紀錄。",
+        content: "✅ 已回填報刀紀錄。",
         components: []
       })
       interaction.followUp({
