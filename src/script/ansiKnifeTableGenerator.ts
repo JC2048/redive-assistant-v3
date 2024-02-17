@@ -7,10 +7,7 @@ import { TextChannel } from 'discord.js'
 
 import ANSI, { ANSIForeColor, ANSIBackColor, ANSIFontStyle } from '../script/ANSI'
 
-export default async function generateANSIKnifeTable(guildId: string): Promise<void> {
-
-  const guild = client.guilds.cache.get(guildId)
-  const members = guild.members.cache
+export default async function generateANSIKnifeTable(guildId: string, round?: number): Promise<void> {
 
   const guildData = await data.get(guildId)
   const guildSetting = await setting.get(guildId)
@@ -18,11 +15,14 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   const minProgress = Math.min(...guildData.progress)
   const maxProgress = Math.max(...guildData.progress) + 2
 
-  // always generate at least 3 rounds
-  // const tableWeekCount = Math.max(3, maxProgress - minProgress + 1)
-
   // generate at most 4 rounds and at least 3 rounds
   const tableWeekCount = Math.min(4, maxProgress - minProgress + 1)
+
+  // early return if there is no need to update
+  if (typeof round !== 'undefined' && (round <= minProgress || round >= minProgress + tableWeekCount - 1)) return console.log(`Record table of guild ${guildId} bypassed update`)
+
+  const guild = client.guilds.cache.get(guildId)
+  const members = guild.members.cache
 
   const recordFilter = `week >= ${minProgress} && week <= ${minProgress + tableWeekCount - 1}`
   const guildRecords = await record.getGuildRecords(guildId, recordFilter)
@@ -36,12 +36,10 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   }
 
   // header
-  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔹${guildData.knifeCount} 🔸${guildData.leftoverCount}\n`
+  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔷${guildData.knifeCount} 🔶${guildData.leftoverCount}\n`
 
   for (let i = 0; i < 5; i++) {
-
     tableText += `${parseChineseBossNumber(i + 1 as 1 | 2 | 3 | 4 | 5)}王 | ${guildData.progress[i] + 1}周 ${guildData.hp[i]}萬\n`
-
   }
 
   tableText += "--------------------\n\n"
@@ -64,8 +62,12 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
       const recordTextList: string[] = []
       for (const record of recordMatrix[i][j]) {
         const guildMember = members.get(record.expand.user.userId)
-        const recordText = `${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`} ${!!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`
-        recordTextList.push(` ${record.isLeftover ? "🔸" : "🔹"}${ANSI.formatText(recordText, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE)}\n`)
+        const recordText =
+          ANSI.formatText(`${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
+            + ` ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
+          )
+          + ` ${!record.isCompleted && !!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`  // only add damage to non-completed records
+        recordTextList.push(` ${record.isLeftover ? "🔶" : "🔷"}${recordText}\n`)
 
         // evaluate total hp
         if (record.damage > 0) {
@@ -78,7 +80,7 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
 
       tableText += `${guildData.progress[j] === currentRound ? "▶️" : guildData.progress[j] > currentRound ? "✅" : "🕓"} ${parseChineseBossNumber(j + 1)}王 `
       tableText += guildData.progress[j] <= currentRound
-        ? `${ANSI.formatText(hp.toString(), !hpValid ? ANSIForeColor.YELLOW : hp > 0 ? ANSIForeColor.GREEN : [ANSIBackColor.DEEP_BLUE, ANSIForeColor.RED], ANSIFontStyle.BOLD)}`
+        ? `${ANSI.formatText(hp.toString(), !hpValid ? ANSIForeColor.YELLOW : hp > 0 ? ANSIForeColor.GREEN : ANSIForeColor.RED, ANSIFontStyle.BOLD)}`
         + (guildData.progress[j] === currentRound ? `/${config.hp[weekToStage(currentWeek) - 1][j]}萬\n` : "萬\n")
         : "\n"
       tableText += recordTextList.join("")
@@ -115,8 +117,5 @@ export default async function generateANSIKnifeTable(guildId: string): Promise<v
   await guild.members.me.setNickname(
     `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${Math.min(...guildData.progress) + 1} - ${Math.max(...guildData.progress) + 1}周` : ""}`
   )
-
-
   return
-
 }
