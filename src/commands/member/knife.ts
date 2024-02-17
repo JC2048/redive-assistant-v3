@@ -75,7 +75,7 @@ export default {
       await interaction.deferReply({ ephemeral: true })
 
       // handle condition
-      console.log("[/knife] getting user data")
+      // console.log("[/knife] getting user data")
       const userData = await user.get(interaction.guildId, interaction.user.id)
       if (userData == null) {
         await interaction.editReply({
@@ -104,7 +104,7 @@ export default {
       }
 
       // 1
-      console.log("[/knife] getting guild data")
+      // console.log("[/knife] getting guild data")
       const guildData = await dbData.get(interaction.guildId!)
       if (args.week - 1 < guildData.progress[args.boss - 1]) {
         await interaction.editReply({
@@ -146,7 +146,7 @@ export default {
       })
 
       interaction.editReply({
-        content: `已新增報刀紀錄!`,
+        content: `✅ 已新增報刀紀錄!`,
       })
 
       interaction.followUp({
