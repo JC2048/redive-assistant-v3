@@ -67,8 +67,18 @@ export default {
 
   },
 
-  remove: async () => {
+  remove: async (id: string): Promise<boolean> => {
 
+    try {
+      const isDeleted = await db.collection('record').delete(id)
+      return isDeleted
+
+    } catch (e) {
+
+      console.log("[ERROR] Error while removing record " + id)
+      console.error(e)
+      return false
+    }
   }
 
 }
