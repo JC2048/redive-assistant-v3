@@ -1,4 +1,4 @@
-import { Embed, EmbedBuilder, GuildMember } from "discord.js";
+import { Embed, EmbedBuilder, GuildMember, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import { DatabaseRecordData, RecordData } from "../types/Database";
 import { knifeCategoryTranslator } from "./util";
 
@@ -25,7 +25,7 @@ export function recordEmbedGenerator(record: DatabaseRecordData | RecordData, gu
   const embed = new EmbedBuilder()
     .setAuthor({
       name: `${overrides.name ?? guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} |`
-        + ` ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ?? overrides.isCompleted ?? false ? "✅" : ""}`
+        + ` ${record.isLeftover ? "🔶" : "🔷"}${record.isCompleted ?? overrides.isCompleted ?? false ? "✅" : ""}`
         + ` ${record.week + 1}周 ${record.boss}王`,
       iconURL: guildMember.displayAvatarURL() ?? guildMember.user.avatarURL()
     })
@@ -42,5 +42,30 @@ export function recordEmbedGenerator(record: DatabaseRecordData | RecordData, gu
   */
 
   return embed
+
+}
+
+export function recordStringSelectMenuBuilder(
+  interactionId: string,
+  records: RecordData[] | DatabaseRecordData[],
+  options?: {
+    placeholder?: string,
+    minSelect?: number,
+    maxSelect?: number
+  }): StringSelectMenuBuilder {
+
+  return new StringSelectMenuBuilder()
+    .setCustomId(interactionId + "record_select")
+    .setPlaceholder(options?.placeholder ?? "選擇一則報刀紀錄")
+    .addOptions([
+      ...records.map(record =>
+        new StringSelectMenuOptionBuilder()
+          .setLabel(`${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
+          .setDescription(`${knifeCategoryTranslator(record.category)}`)
+          .setValue(record.id ?? "")
+      )
+    ])
+    .setMinValues(options?.minSelect ?? 1)
+    .setMaxValues(options?.maxSelect ?? 1)
 
 }
