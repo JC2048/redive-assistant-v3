@@ -37,7 +37,7 @@ export default {
     await argumentParser(interaction, data.options, async (interaction, args) => {
       const oldData = await dbData.get(interaction.guildId!)
 
-      const weekArr: [number, number, number, number, number] = [...oldData.progress]
+      const weekArr = [...oldData.progress]
       const round = args.week - 1
 
       // cannot be highest round - 2 or lowest round + 2
