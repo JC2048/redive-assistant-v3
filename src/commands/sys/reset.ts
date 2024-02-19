@@ -75,7 +75,7 @@ export default {
         await dbData.init(interaction.guildId!)
 
         // delete all existing data
-        await user.guildDeleteAll(interaction.guildId)
+        await user.deleteGuildUsers(interaction.guildId)
 
 
         await user.guildInit(interaction.guildId!, guildMemberIds)
