@@ -105,12 +105,12 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
         topMessage: guildSetting.knifeTable.topMessage
       }
     })
-    console.log(`Table length: ${newMessage.content.length}`)
+    // console.log(`Table length: ${newMessage.content.length}`)
 
   } else {
     // update message
     const newMessage = await message.edit(tableText)
-    console.log(`Table length: ${newMessage.content.length}`)
+    // console.log(`Table length: ${newMessage.content.length}`)
   }
 
   // update nickname
