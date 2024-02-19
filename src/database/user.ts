@@ -3,13 +3,25 @@ import { db } from '../index'
 
 async function get(guildId: string, userId: string): Promise<DatabaseUserData | undefined>;
 async function get(guildId: string, userId: string, expand: true): Promise<ExpandedDatabaseUserData | undefined>;
-async function get(guildId: string, userId: string, expand?: true): Promise<DatabaseUserData | ExpandedDatabaseUserData | undefined> {
+async function get(guildId: string, userId: string, expand?: boolean): Promise<DatabaseUserData | ExpandedDatabaseUserData | undefined> {
   const data = await db.collection('user').getFirstListItem(
     `userId = "${userId}" && guildId = "${guildId}"`,
     expand ? { expand: 'record' } : undefined
   )
   if (!!data) return data as DatabaseUserData | ExpandedDatabaseUserData
   else return undefined
+}
+
+async function getGuildUsers(guildId: string): Promise<DatabaseUserData[]>;
+async function getGuildUsers(guildId: string, expand: true): Promise<ExpandedDatabaseUserData[]>;
+async function getGuildUsers(guildId: string, expand?: boolean): Promise<DatabaseUserData[] | ExpandedDatabaseUserData[]> {
+  const data = await db.collection('user').getFullList<DatabaseUserData | ExpandedDatabaseUserData>(
+    {
+      filter: `guildId = "${guildId}"`,
+      expand: expand ? 'record' : undefined
+    }
+  )
+  return data
 }
 
 export default {
@@ -50,7 +62,9 @@ export default {
 
   },
 
-  guildDeleteAll: async (guildId: string) => {
+  getGuildUsers,
+
+  deleteGuildUsers: async (guildId: string) => {
 
     const guildUserDataList = await db.collection('user').getFullList({
       filter: `guildId = "${guildId}"`,
