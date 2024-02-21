@@ -146,6 +146,11 @@ export default {
             // })
           }
 
+          // update record nextActivator status
+          await record.update(selectedRecord.id, {
+            nextActivator: true
+          })
+
           // update guild status
           const guildData = await dbData.get(interaction.guildId)
           const updatedData: Partial<GuildData> = {

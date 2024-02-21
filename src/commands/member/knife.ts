@@ -128,6 +128,7 @@ export default {
         isLeftover: args.leftover === 1,
         isCompleted: false,
         damage: args.damage ?? 0,
+        nextActivator: false
       }
 
       const newRecord = await record.add(recordData)

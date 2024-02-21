@@ -79,6 +79,7 @@ export interface RecordData {
   isLeftover: boolean
   isCompleted: boolean
   damage: number
+  nextActivator: boolean
 }
 
 interface DatabaseFields {
