@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
 import { argumentParser } from '../../script/argumentParser';
+import generateANSIMemberTable from '../../script/ansiMemberTableGenerator';
 
 /*
 Update knife or member dashboard
@@ -35,7 +36,7 @@ export default {
           })
           return
         case 'member':
-          // TODO generate member table
+          await generateANSIMemberTable(interaction.guildId!)
           await interaction.reply({
             content: "已刷新成員列表",
             ephemeral: true
