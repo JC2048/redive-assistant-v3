@@ -63,7 +63,7 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
       for (const record of recordMatrix[i][j]) {
         const guildMember = members.get(record.expand.user.userId)
         const recordText =
-          ANSI.formatText(`${record.isCompleted ? "✅" : ""}${record.nextActivator ? " ↪️" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
+          ANSI.formatText(`${record.nextActivator ? "↪️" : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
             + ` ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
           )
           + ` ${!record.isCompleted && !!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`  // only add damage to non-completed records
