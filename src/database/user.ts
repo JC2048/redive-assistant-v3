@@ -51,7 +51,7 @@ export default {
   // },
   get,
 
-  updateByUser: async (userData: DatabaseUserData, data: Partial<UserData> & UserDataOperation) => {
+  updateByUser: async (userData: DatabaseUserData | ExpandedDatabaseUserData, data: Partial<UserData> & UserDataOperation) => {
 
     try {
       await db.collection('user').update(userData.id, data)
