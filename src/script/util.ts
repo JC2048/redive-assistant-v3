@@ -12,12 +12,8 @@ export function parseChineseBossNumber(boss: number): string {
 export function weekToStage(week: number): number {
   const stageStartRound = config.stageStart
 
-  for (let i = 1; i < stageStartRound.length; i++) {
-
-    if (week - 1 >= stageStartRound[i]) {
-      continue
-    } else return i
-  
+  for (let i = 0; i < stageStartRound.length; i++) {
+    if (week - 1 < stageStartRound[i]) return i
   }
   return stageStartRound.length
 
