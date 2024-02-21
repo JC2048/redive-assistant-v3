@@ -136,7 +136,13 @@ export default {
             // add leftover to the user
             const userData = await user.get(interaction.guildId, recordMember.id)
             await user.updateByUser(userData, {
-              leftoverCount: Math.min(userData.leftoverCount + 1, 3)
+              // leftoverCount: Math.min(userData.leftoverCount + 1, 3)
+              'leftoverCount+': 1
+            })
+            // add leftover to guild
+            // const guildData = await dbData.get(interaction.guildId)
+            await dbData.update(interaction.guildId, {
+              'leftoverCount+': 1
             })
           }
 

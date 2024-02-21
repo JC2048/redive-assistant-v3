@@ -177,20 +177,24 @@ export default {
 
       if (updatedRecord.isLeftover) {
         await user.updateByUser(userData, {
-          leftoverCount: Math.max(userData.leftoverCount - 1, 0)
+          // leftoverCount: Math.max(userData.leftoverCount - 1, 0),
+          'leftoverCount-': 1,
         })
         await dbData.update(interaction.guildId, {
           hp: updatedHp,
-          leftoverCount: Math.max(guildData.leftoverCount - 1, 0)
+          // leftoverCount: Math.max(guildData.leftoverCount - 1, 0),
+          'leftoverCount-': 1
         })
 
       } else {
         await user.updateByUser(userData, {
-          knifeCount: Math.max(userData.knifeCount - 1, 0)
+          // knifeCount: Math.max(userData.knifeCount - 1, 0),
+          'knifeCount-': 1
         })
         await dbData.update(interaction.guildId, {
           hp: updatedHp,
-          knifeCount: Math.max(guildData.knifeCount - 1, 0)
+          // knifeCount: Math.max(guildData.knifeCount - 1, 0)
+          'knifeCount-': 1
         })
       }
 
