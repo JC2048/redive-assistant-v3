@@ -2,7 +2,6 @@ import { user, record } from '../../database';
 import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, GuildMember, SlashCommandBuilder, StringSelectMenuBuilder } from 'discord.js';
 import { DatabaseRecordData } from '../../types/Database';
 import { RecordColor, recordEmbedGenerator, recordStringSelectMenuBuilder } from '../../script/RecordProcessor';
-import ansiMemberTableGenerator from '../../script/ansiMemberTableGenerator';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
 
 /*
@@ -16,7 +15,7 @@ export default {
 
   execute: async (interaction: ChatInputCommandInteraction) => {
 
-    await interaction.deferReply({ ephemeral: true })
+    const message = await interaction.deferReply({ ephemeral: true })
     const userData = await user.get(interaction.guildId, interaction.user.id, true)
     if (!userData) {
       await interaction.editReply({ content: '無法尋找你的成員紀錄!\n請向會長或管理員回報!', })
@@ -64,8 +63,8 @@ export default {
 
     } catch (e) {
 
-      await interaction.editReply({
-        content: "已取消。",
+      interaction.editReply({
+        content: "🕓 已逾時",
         components: []
       })
       return
@@ -81,11 +80,13 @@ export default {
 
       interaction.editReply({
         content: `✅ 已刪除報刀！`,
+        components: []
       })
       interaction.followUp({
         embeds: [
           recordEmbedGenerator(deletedRecord, interaction.member as GuildMember, {
-            color: RecordColor.CANCEL
+            color: RecordColor.CANCEL,
+            footer: "刪除報刀",
           })
         ]
       })

@@ -135,7 +135,7 @@ export default {
       if (!newRecord) {
 
         await interaction.editReply({
-          content: '無法新增報刀紀錄!\n請向會長或管理員回報!',
+          content: '無法新增報刀!\n請向會長或管理員回報!',
         })
         return
 
@@ -146,12 +146,13 @@ export default {
         record: [...userData.record, newRecord.id],
       })
 
-      interaction.editReply({
-        content: `✅ 已新增報刀紀錄!`,
+      await interaction.editReply({
+        content: `✅ 已新增報刀!`,
       })
 
-      interaction.followUp({
-        embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember,)]
+      await interaction.followUp({
+        embeds: [recordEmbedGenerator(recordData, interaction.member as GuildMember, { footer: '新增報刀' })],
+        ephemeral: false
       })
 
       generateANSIKnifeTable(interaction.guildId)

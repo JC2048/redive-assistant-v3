@@ -156,7 +156,7 @@ export default {
       } catch (e) {
 
         await interaction.editReply({
-          content: "已取消。",
+          content: "🕓 已逾時",
           components: []
         })
         return
@@ -205,7 +205,8 @@ export default {
       interaction.followUp({
         embeds: [recordEmbedGenerator(updatedRecord, interaction.member as GuildMember, {
           isCompleted: true,
-          color: RecordColor.COMPLETE
+          color: RecordColor.COMPLETE,
+          footer: "回填報刀",
         })]
       })
       generateANSIKnifeTable(interaction.guildId)
