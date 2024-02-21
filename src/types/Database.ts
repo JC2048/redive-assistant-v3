@@ -1,8 +1,6 @@
 import { KnifeCategory, KnifeType } from '../Enums'
 
-export interface DatabaseGuildSetting extends DatabaseFields {
-
-  readonly collectionName: "guild_setting"
+export interface GuildSetting {
 
   guildId: string
 
@@ -26,14 +24,11 @@ export interface DatabaseGuildSetting extends DatabaseFields {
     nickname: string
     showProgressInName: boolean
   }
-
 }
 
-export interface GuildSetting extends Omit<DatabaseGuildSetting, "id" | "created" | "updated" | "collectionId" | "collectionName"> { }
+export type DatabaseGuildSetting = DatabaseFields & GuildSetting
 
-export interface DatabaseGuildData extends DatabaseFields {
-
-  readonly collectionName: "guild_data"
+export interface GuildData {
 
   guildId: string
 
@@ -45,7 +40,14 @@ export interface DatabaseGuildData extends DatabaseFields {
 
 }
 
-export interface GuildData extends Omit<DatabaseGuildData, "id" | "created" | "updated" | "collectionId" | "collectionName"> { }
+export interface GuildDataOperation {
+  'knifeCount+'? : number
+  'knifeCount-'? : number
+  'leftoverCount+'? : number
+  'leftoverCount-'? : number
+}
+
+export type DatabaseGuildData = DatabaseFields & GuildData
 
 export interface UserData {
   userId: string
@@ -55,6 +57,16 @@ export interface UserData {
   knifeCount: number
   leftoverCount: number
   record: string[]
+  // sl: boolean
+}
+
+export interface UserDataOperation {
+  'knifeCount+'? : number
+  'knifeCount-'? : number
+  'leftoverCount+'? : number
+  'leftoverCount-'? : number
+  'record+'? : string
+  'record-'? : string
 }
 
 export interface RecordData {
@@ -89,7 +101,7 @@ export type DatabaseUserData = DatabaseFields & UserData
 
 export type ExpandedDatabaseUserData = DatabaseUserData & {
   readonly expand: {
-    readonly record: DatabaseRecordData | DatabaseRecordData[]
+    readonly record: DatabaseRecordData[]
   }
 }
 

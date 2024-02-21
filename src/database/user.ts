@@ -1,4 +1,4 @@
-import { UserData, DatabaseUserData, ExpandedDatabaseUserData } from '../types/Database'
+import { UserData, DatabaseUserData, ExpandedDatabaseUserData, UserDataOperation } from '../types/Database'
 import { db } from '../index'
 
 async function get(guildId: string, userId: string): Promise<DatabaseUserData | undefined>;
@@ -51,7 +51,7 @@ export default {
   // },
   get,
 
-  updateByUser: async (userData: DatabaseUserData, data: Partial<UserData>) => {
+  updateByUser: async (userData: DatabaseUserData, data: Partial<UserData> & UserDataOperation) => {
 
     try {
       await db.collection('user').update(userData.id, data)

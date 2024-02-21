@@ -1,5 +1,5 @@
 import { db } from '../index'
-import { DatabaseGuildData, GuildData } from '../types/Database'
+import { DatabaseGuildData, GuildData, GuildDataOperation } from '../types/Database'
 import config from '../config'
 
 export default {
@@ -35,7 +35,7 @@ export default {
 
   },
 
-  update: async(guildId: string, data: Partial<GuildData>) => {
+  update: async(guildId: string, data: Partial<GuildData> & GuildDataOperation) => {
     try {
       const oldData = await db.collection('guild_data').getFirstListItem(`guildId = "${guildId}"`)
       await db.collection('guild_data').update(
