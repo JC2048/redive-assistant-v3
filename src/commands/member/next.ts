@@ -139,11 +139,11 @@ export default {
               // leftoverCount: Math.min(userData.leftoverCount + 1, 3)
               'leftoverCount+': 1
             })
-            // add leftover to guild
+
             // const guildData = await dbData.get(interaction.guildId)
-            await dbData.update(interaction.guildId, {
-              'leftoverCount+': 1
-            })
+            // await dbData.update(interaction.guildId, {
+            //   'leftoverCount+': 1
+            // })
           }
 
           // update guild status
