@@ -59,8 +59,12 @@ export default {
       // create selection
 
       let selectedRecordId = "0"
+      const guildMembers = interaction.guild.members.cache
 
-      const recordSelect = recordStringSelectMenuBuilder(interaction.id, records, { placeholder: '請選擇要結算的報刀', })
+      const recordSelect = recordStringSelectMenuBuilder(
+        interaction.id, records, { placeholder: '請選擇要結算的報刀', },
+        true, guildMembers
+      )
       const row = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(recordSelect)
 
       const recordSelectionMessage = await interaction.editReply({
@@ -119,7 +123,14 @@ export default {
             new ButtonBuilder().setCustomId(interaction.id + "next_confirm").setLabel("確定").setStyle(ButtonStyle.Danger),
             new ButtonBuilder().setCustomId(interaction.id + "next_cancel").setLabel("取消").setStyle(ButtonStyle.Secondary),
           )
-        ]
+        ],
+        embeds: [recordEmbedGenerator(
+          selectedRecord,
+          recordMember,
+          {
+            color: selectedRecord.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL
+          }
+        )]
       })
 
       const confirmationFilter = i => i.user.id === interaction.user.id
@@ -163,7 +174,7 @@ export default {
           }
           const newProgress = updatedData.progress[args.boss - 1] + 1
           updatedData.progress[args.boss - 1] = newProgress
-          updatedData.hp[args.boss - 1] = config.hp[weekToStage(newProgress + 1)][args.boss - 1]
+          updatedData.hp[args.boss - 1] = config.hp[weekToStage(newProgress + 1) - 1][args.boss - 1]
           await dbData.update(interaction.guildId, updatedData)
 
           // create tag message
@@ -180,26 +191,33 @@ export default {
 
           // edit original message & follow up
           await interaction.editReply({
-            content: '已進行結算!',
-            components: []
+            content: '✅ 已進行結算!',
+            components: [],
+            embeds: []
           })
           await interaction.followUp({
             content: `✅ 已為${guildData.progress[args.boss - 1] + 1}周${args.boss}王進行結算 : 目前${args.boss}王進度為${guildData.progress[args.boss - 1] + 2}周${tagString === "" ? "" : ``
               + `以下成員請準備出刀：${tagString}`}\n出刀前請緊記：借角色、調星數、檢查Rank、放裝備！`,
-            ephemeral: false
+            ephemeral: false,
+            embeds: [recordEmbedGenerator(
+              selectedRecord, recordMember, {
+              nextActivator: true,
+              footer: `結算周目${args.boss}王`
+            }
+            )]
           })
           nextNotificationMessage.delete()
           generateANSIKnifeTable(interaction.guildId)
           return
 
         } else {
-          await interaction.editReply({ content: '已取消', components: [] })
+          await interaction.editReply({ content: '已取消', components: [], embeds: [] })
           nextNotificationMessage.delete()
           return
         }
       } catch (e) {
 
-        await interaction.editReply({ content: '指令已逾時', components: [] })
+        await interaction.editReply({ content: '🕓 已逾時', components: [], embeds: [] })
         nextNotificationMessage.delete()
         return
 
