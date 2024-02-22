@@ -114,8 +114,9 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
   }
 
   // update nickname
+  const minRound = Math.min(...guildData.progress)
   await guild.members.me.setNickname(
-    `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${Math.min(...guildData.progress) + 1} - ${Math.max(...guildData.progress) + 1}周` : ""}`
+    `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${minRound + 1} - ${Math.min(Math.max(...guildData.progress), minRound) + 1}周` : ""}`
   )
   return
 }
