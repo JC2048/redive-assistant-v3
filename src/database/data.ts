@@ -1,16 +1,17 @@
 import { db } from '../index'
 import { DatabaseGuildData, GuildData, GuildDataOperation } from '../types/Database'
 import config from '../config'
+import { weekToStage } from '../script/util'
 
 export default {
-  init: async(guildId: string) => {
-    
+  init: async (guildId: string) => {
+
     const defaultData: GuildData = {
 
       guildId: guildId,
 
       progress: [0, 0, 0, 0, 0],
-      hp: config.hp[0] as [number, number, number, number, number],
+      hp: config.hp[weekToStage(0) - 1] as [number, number, number, number, number],
 
       knifeCount: 90,
       leftoverCount: 0
@@ -35,7 +36,7 @@ export default {
 
   },
 
-  update: async(guildId: string, data: Partial<GuildData> & GuildDataOperation) => {
+  update: async (guildId: string, data: Partial<GuildData> & GuildDataOperation) => {
     try {
       const oldData = await db.collection('guild_data').getFirstListItem(`guildId = "${guildId}"`)
       await db.collection('guild_data').update(
@@ -47,7 +48,7 @@ export default {
     }
   },
 
-  get: async(guildId: string): Promise<DatabaseGuildData> => {
+  get: async (guildId: string): Promise<DatabaseGuildData> => {
 
     try {
       const data = await db.collection('guild_data').getFirstListItem<DatabaseGuildData>(`guildId = "${guildId}"`)
