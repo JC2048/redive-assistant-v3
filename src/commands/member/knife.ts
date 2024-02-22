@@ -103,6 +103,13 @@ export default {
         return
       }
 
+      if (args.week <= 0) {
+        await interaction.editReply({
+          content: `你是打錯周目還是腦袋有問題?`,
+        })
+        return
+      }
+
       // 1
       // console.log("[/knife] getting guild data")
       const guildData = await dbData.get(interaction.guildId!)
