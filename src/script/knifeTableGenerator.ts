@@ -2,7 +2,7 @@ import { client } from '../index'
 import { record, setting, data } from '../database'
 import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
-import { DatabaseRecordData } from '../types/Database'
+import { ExpandedDatabaseRecordData } from '../types/Database'
 import { Channel, TextChannel } from 'discord.js'
 
 
@@ -24,7 +24,7 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
   const guildRecords = await record.getGuildRecords(guildId, recordFilter)
 
   // generate traversed record matrix
-  const recordMatrix: DatabaseRecordData[][][] = new Array(tableWeekCount).fill(0).map(() => new Array(5).fill(0).map(() => []))
+  const recordMatrix: ExpandedDatabaseRecordData[][][] = new Array(tableWeekCount).fill(0).map(() => new Array(5).fill(0).map(() => []))
 
   for (const record of guildRecords) {
     const recordTableWeek = record.week - minProgress;
@@ -56,7 +56,7 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
       tableText += `${guildData.progress[j] === currentWeek - 1 ? `${guildData.hp[j]}萬` : guildData.progress[j] > currentWeek - 1 ? "" : `${config.hp[weekToStage(currentWeek)][j]}萬`}\n`
 
       for (const record of recordMatrix[i][j]) {
-        const guildMember = members.get(record.userId)
+        const guildMember = members.get(record.expand.user.id)
         tableText += `  ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}\n`
       }
     }
