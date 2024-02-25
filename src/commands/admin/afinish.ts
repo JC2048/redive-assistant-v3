@@ -83,7 +83,7 @@ export default {
         return
       }
 
-      const guildData = await dbData.get(interaction.guildId)
+
       // const bossRound = guildData.progress[args.boss - 1]
 
       // 2
@@ -174,30 +174,31 @@ export default {
       })
 
       // update user data & guild data
+      const guildData = await dbData.get(interaction.guildId)
       const updatedHp = [...guildData.hp]
       updatedHp[args.boss - 1] = Math.max(guildData.hp[args.boss - 1] - args.damage, 0)
 
       // TODO trigger NEXT event since hp is below 0
 
       if (updatedRecord.isLeftover) {
-        await user.updateByUser(userData, {
-          // leftoverCount: Math.max(userData.leftoverCount - 1, 0),
-          'leftoverCount-': 1,
-        })
         await dbData.update(interaction.guildId, {
           hp: updatedHp,
           // leftoverCount: Math.max(guildData.leftoverCount - 1, 0),
           'leftoverCount-': 1
         })
+        await user.updateByUser(userData, {
+          // leftoverCount: Math.max(userData.leftoverCount - 1, 0),
+          'leftoverCount-': 1,
+        })
 
       } else {
-        await user.updateByUser(userData, {
-          // knifeCount: Math.max(userData.knifeCount - 1, 0),
-          'knifeCount-': 1
-        })
         await dbData.update(interaction.guildId, {
           hp: updatedHp,
           // knifeCount: Math.max(guildData.knifeCount - 1, 0)
+          'knifeCount-': 1
+        })
+        await user.updateByUser(userData, {
+          // knifeCount: Math.max(userData.knifeCount - 1, 0),
           'knifeCount-': 1
         })
       }
