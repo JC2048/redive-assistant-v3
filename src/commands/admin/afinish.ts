@@ -95,8 +95,8 @@ export default {
       }
 
       // const filter = `boss = ${args.boss} && week = ${bossRound} && isCompleted = false`;
-      const recordList = userData.expand?.record ?? []
-      const filteredRecordList = recordList.filter((record) => record.isCompleted === false).filter((record) => (userData.knifeCount > 0 ? !record.isLeftover : false) || (userData.leftoverCount > 0 ? record.isLeftover : false));
+      const recordList = (userData.expand?.record ?? []).filter(r => !r.isCompleted)
+      const filteredRecordList = recordList.filter((record) => (userData.knifeCount > 0 ? !record.isLeftover : false) || (userData.leftoverCount > 0 ? record.isLeftover : false));
 
       // 1
       if (recordList.length === 0) {
