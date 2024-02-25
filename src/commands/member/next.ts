@@ -178,7 +178,7 @@ export default {
           await dbData.update(interaction.guildId, updatedData)
 
           // create tag message
-          const nextRoundRecords = await record.getGuildRecords(interaction.guildId, `week = ${newProgress}`)
+          const nextRoundRecords = await record.getGuildRecords(interaction.guildId, `week = ${newProgress} && boss = ${args.boss}`)
 
           let tagString: string
           if (nextRoundRecords.length === 0) {
@@ -196,7 +196,7 @@ export default {
             embeds: []
           })
           await interaction.followUp({
-            content: `✅ 已為${guildData.progress[args.boss - 1] + 1}周${args.boss}王進行結算 : 目前${args.boss}王進度為${guildData.progress[args.boss - 1] + 2}周${tagString === "" ? "" : ``
+            content: `✅ 已為${guildData.progress[args.boss - 1] + 1}周${args.boss}王進行結算 : 目前${args.boss}王進度為${guildData.progress[args.boss - 1] + 2}周${tagString === "" ? "" : `\n`
               + `以下成員請準備出刀：${tagString}`}\n出刀前請緊記：借角色、調星數、檢查Rank、放裝備！`,
             ephemeral: false,
             embeds: [recordEmbedGenerator(
