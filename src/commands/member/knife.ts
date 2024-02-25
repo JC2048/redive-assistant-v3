@@ -118,7 +118,7 @@ export default {
           content: `不能在已過去的周目新增報刀!`,
         })
         return
-      } else if (args.week - 1 > Math.min(4, Math.max(...guildData.progress) - Math.min(...guildData.progress) + 1)) {
+      } else if (args.week - 1 > Math.max(...guildData.progress) + 2) {
         await interaction.editReply({
           content: `報刀周目不能大幅超越目前進度!\n請參考報刀表上的周目進行報刀!`,
         })
