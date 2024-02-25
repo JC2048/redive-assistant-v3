@@ -26,8 +26,11 @@ export default async function generateANSIMemberTable(guildId: string, force: bo
     const member = members.get(userData.userId)
     if (!member) continue
 
-    let userText = `${ANSI.formatText(userData.knifeCount.toString(), ANSIForeColor.BLUE)}|${ANSI.formatText(userData.leftoverCount.toString(), ANSIForeColor.YELLOW)} `
-      + `${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
+    // let userText = `${ANSI.formatText(userData.knifeCount.toString(), ANSIForeColor.BLUE)}|${ANSI.formatText(userData.leftoverCount.toString(), ANSIForeColor.YELLOW)} `
+    //   + `${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
+
+    // $ Disabled coloring of remaining knife count
+    let userText = `${userData.knifeCount}|${userData.leftoverCount} ${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
 
     const fullRecords = userData.expand?.record.filter(r => !r.isLeftover && r.isCompleted) ?? []
     const leftoverRecords = userData.expand?.record.filter(r => r.isLeftover && r.isCompleted) ?? []
@@ -39,6 +42,10 @@ export default async function generateANSIMemberTable(guildId: string, force: bo
       }, "")
     }
 
+    // if (fullRecords.length > 0) userText += ` 🔷${ANSI.formatText(generateRecordLine(fullRecords), ANSIForeColor.BLUE)}`
+    // if (leftoverRecords.length > 0) userText += ` 🔶${ANSI.formatText(generateRecordLine(leftoverRecords), ANSIForeColor.YELLOW)}`
+
+    // TODO reset the end tag after each line
     if (fullRecords.length > 0) userText += ` 🔷${ANSI.formatText(generateRecordLine(fullRecords), ANSIForeColor.BLUE)}`
     if (leftoverRecords.length > 0) userText += ` 🔶${ANSI.formatText(generateRecordLine(leftoverRecords), ANSIForeColor.YELLOW)}`
 
