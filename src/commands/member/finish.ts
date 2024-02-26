@@ -76,7 +76,7 @@ export default {
         })
         return
       }
-      
+
       let guildData = await dbData.get(interaction.guildId)
       const bossRound = guildData.progress[args.boss - 1]
 
@@ -169,12 +169,14 @@ export default {
         damage: (args.damage >= 20000 ? Math.round(args.damage / 10000) : args.damage)
       })
 
+
       // update user data & guild data
       guildData = await dbData.get(interaction.guildId)
       const updatedHp = [...guildData.hp]
-      updatedHp[args.boss - 1] = Math.max(guildData.hp[args.boss - 1] - args.damage, 0)
+      updatedHp[args.boss - 1] = Math.max(guildData.hp[args.boss - 1] - (args.damage >= 20000 ? Math.round(args.damage / 10000) : args.damage), 0)
 
       // TODO trigger NEXT event since hp is below 0
+
 
       if (updatedRecord.isLeftover) {
         await dbData.update(interaction.guildId, {
