@@ -45,9 +45,10 @@ export default async function generateANSIMemberTable(guildId: string, force: bo
     // if (fullRecords.length > 0) userText += ` 🔷${ANSI.formatText(generateRecordLine(fullRecords), ANSIForeColor.BLUE)}`
     // if (leftoverRecords.length > 0) userText += ` 🔶${ANSI.formatText(generateRecordLine(leftoverRecords), ANSIForeColor.YELLOW)}`
 
-    // TODO reset the end tag after each line
-    if (fullRecords.length > 0) userText += ` 🔷${ANSI.formatText(generateRecordLine(fullRecords), ANSIForeColor.BLUE)}`
-    if (leftoverRecords.length > 0) userText += ` 🔶${ANSI.formatText(generateRecordLine(leftoverRecords), ANSIForeColor.YELLOW)}`
+    // reset the end tag after each line
+    if (fullRecords.length > 0) userText += ` 🔷${ANSI.start(ANSIForeColor.BLUE)}${generateRecordLine(fullRecords)}`
+    if (leftoverRecords.length > 0) userText += ` 🔶${ANSI.start(ANSIForeColor.YELLOW)}${generateRecordLine(leftoverRecords)}`
+    if (fullRecords.length > 0 || leftoverRecords.length > 0) userText += ANSI.reset()
 
     tableText += `${userText}\n`
   }
