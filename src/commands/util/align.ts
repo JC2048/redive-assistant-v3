@@ -130,7 +130,7 @@ export default {
     })
 
     const remainTimeString = submittedModal.components[0]?.components[0].value
-    console.log(remainTimeString)
+    // console.log(remainTimeString)
     const timelineString = submittedModal.components[1].components[0].value
 
     if (/^(?:[01]:?)\d{2}$/.test(remainTimeString) === false && remainTimeString !== "") {

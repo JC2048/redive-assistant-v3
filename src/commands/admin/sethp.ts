@@ -52,7 +52,7 @@ export default {
       }
 
       const oldData = await dbData.get(interaction.guildId)
-      console.log(JSON.stringify(oldData, null, 2))
+      // console.log(JSON.stringify(oldData, null, 2))
       const hpArr: number[] = [...oldData.hp]
       hpArr[args.boss - 1] = args.hp
       await dbData.update(interaction.guildId, {

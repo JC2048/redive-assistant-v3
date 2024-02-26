@@ -185,7 +185,7 @@ export default {
             tagString = ""
           } else {
             const userIds = [...new Set(nextRoundRecords.map(r => r.expand.user.userId))]
-            console.log(userIds)
+            // console.log(userIds)
             tagString = userIds.map(id => `<@${id}>`).join(" ")
           }
 
