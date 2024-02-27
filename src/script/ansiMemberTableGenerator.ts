@@ -1,30 +1,46 @@
 import { client } from '../index'
 import { record, setting, data, user } from '../database'
 import { DatabaseRecordData } from 'types/Database'
-import { Channel, TextChannel } from 'discord.js'
+import { Channel, TextChannel, Collection, GuildMember } from 'discord.js'
 
 import ANSI, { ANSIForeColor, ANSIFontStyle } from '../script/ANSI'
 
 export default async function generateANSIMemberTable(guildId: string, force: boolean = false) {
 
+  // get all members
+  const users = await user.getGuildUsers(guildId, true)
+
   const guildData = await data.get(guildId)
   const guildSetting = await setting.get(guildId)
 
   const guild = client.guilds.cache.get(guildId)
-  const members = guild.members.cache
 
-  // get all members
-  const users = await user.getGuildUsers(guildId, true)
-  users.sort((a, b) => parseInt(a.userId) - parseInt(b.userId))
-  users.sort((a, b) => b.knifeCount - a.knifeCount)
+  // TODO only fetch if dont have all guild role members
+  let members: Collection<string, GuildMember>;
+  if (guild.members.cache.size !== users.length) {
+    // fetch guild members if cache incorrect
+    members = await guild.members.fetch()
+    console.log(`Fetched guild members for guild ${guildId}`)
+  } else {
+    members = await guild.members.cache
+  }
+
+  users
+    .sort((a, b) => parseInt(a.userId) - parseInt(b.userId))
+    .sort((a, b) => b.leftoverCount - a.leftoverCount)
+    .sort((a, b) => b.knifeCount - a.knifeCount)
+
 
   let tableText = `\`\`\`ansi\n戰隊尚餘: 🔷${guildData.knifeCount} 🔶${guildData.leftoverCount}\n\n`
   // console.log(users)
 
   for (const userData of users) {
 
-    const member = members.get(userData.userId)
-    if (!member) continue
+    let member = members.get(userData.userId)
+    if (!member) {
+      members = await (await client.guilds.fetch(guildId)).members.fetch()
+      member = members.get(userData.userId)
+    }
 
     // let userText = `${ANSI.formatText(userData.knifeCount.toString(), ANSIForeColor.BLUE)}|${ANSI.formatText(userData.leftoverCount.toString(), ANSIForeColor.YELLOW)} `
     //   + `${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
