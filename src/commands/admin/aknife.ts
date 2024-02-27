@@ -170,6 +170,7 @@ export default {
       const selectedMember = interaction.guild.members.cache.get(selectedUserId)
 
       await interaction.followUp({
+        content: `${(interaction.member as GuildMember).nickname ?? interaction.user.globalName ?? interaction.user.username}已為 <@${selectedUserId}> 新增報刀`,
         embeds: [recordEmbedGenerator(recordData, selectedMember, { footer: '新增報刀' })],
         ephemeral: false
       })

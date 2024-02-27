@@ -5,6 +5,7 @@ import { knifeCategoryTranslator } from '../../script/util';
 import { data as dbData, user, record } from '../../database';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
+import generateANSIMemberTable from '../../script/ansiMemberTableGenerator';
 
 /*
 Allow user to complete a knife record to the db
@@ -209,6 +210,7 @@ export default {
       })
       const selectedMember = interaction.guild.members.cache.get(args.user.id)
       interaction.followUp({
+        content: `${(interaction.member as GuildMember).nickname ?? interaction.user.globalName ?? interaction.user.username}已為 <@${args.user.id}> 回填報刀紀錄`,
         embeds: [recordEmbedGenerator(updatedRecord, selectedMember, {
           isCompleted: true,
           color: RecordColor.COMPLETE,
@@ -216,6 +218,7 @@ export default {
         })]
       })
       generateANSIKnifeTable(interaction.guildId)
+      generateANSIMemberTable(interaction.guildId!)
 
       // }
 

@@ -5,6 +5,7 @@ import { knifeCategoryTranslator } from '../../script/util';
 import { data as dbData, user, record } from '../../database';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
+import generateANSIMemberTable from '../../script/ansiMemberTableGenerator';
 
 /*
 Allow user to complete a knife record to the db
@@ -213,6 +214,7 @@ export default {
         })]
       })
       generateANSIKnifeTable(interaction.guildId)
+      generateANSIMemberTable(interaction.guildId!)
 
       // }
 
