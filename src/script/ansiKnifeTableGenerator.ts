@@ -61,13 +61,6 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
       // generate record text
       const recordTextList: string[] = []
       for (const record of recordMatrix[i][j]) {
-        const guildMember = members.get(record.expand.user.userId)
-        const recordText =
-          ANSI.formatText(`${record.nextActivator ? "↪️" : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
-            + ` ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
-          )
-          + ` ${!record.isCompleted && !!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`  // only add damage to non-completed records
-        recordTextList.push(` ${record.isLeftover ? "🔶" : "🔷"}${recordText}\n`)
 
         // evaluate total hp
         if (record.damage > 0) {
@@ -76,6 +69,19 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
           // set hp invalid if there are empty records
           hpValid = false
         }
+
+        //* bypass record printing if the boss is already completed and the record is 1) not next activator record or 2) is completed
+        if (guildData.progress[j] > currentRound && !record.nextActivator && record.isCompleted) continue
+
+        const guildMember = members.get(record.expand.user.userId)
+        // TODO only reset ANSI color at the end of each row
+        const recordText =
+          ANSI.formatText(`${record.nextActivator ? "↪️" : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
+            + ` ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
+          )
+          + ` ${!record.isCompleted && !!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`  // only add damage to non-completed records
+        recordTextList.push(` ${record.isLeftover ? "🔶" : "🔷"}${recordText}\n`)
+
       }
 
       tableText += `${guildData.progress[j] === currentRound ? "▶️" : guildData.progress[j] > currentRound ? "✅" : "🕓"} ${parseChineseBossNumber(j + 1)}王 `
@@ -105,18 +111,17 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
         topMessage: guildSetting.knifeTable.topMessage
       }
     })
-    // console.log(`Table length: ${newMessage.content.length}`)
 
   } else {
     // update message
     const newMessage = await message.edit(tableText)
-    // console.log(`Table length: ${newMessage.content.length}`)
+    console.log(`Record table updated.Table length: ${newMessage.content.length}`)
   }
 
   // update nickname
   const minRound = Math.min(...guildData.progress)
   await guild.members.me.setNickname(
-    `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${minRound + 1} - ${Math.min(Math.max(...guildData.progress), minRound) + 1}周` : ""}`
+    `${guildSetting.bot.nickname}${guildSetting.bot.showProgressInName ? ` | ${minRound + 1} - ${Math.min((Math.max(...guildData.progress) + 1), minRound + 2)}周` : ""}`
   )
   return
 }
