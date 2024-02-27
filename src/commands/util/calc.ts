@@ -73,8 +73,8 @@ export default {
   execute: async (interaction) => {
     await argumentParser(interaction, _data.options, async (interaction, args) => {
 
-      console.log(interaction.options)
-      console.log(args)
+      // console.log(interaction.options)
+      // console.log(args)
 
       await interaction.deferReply()
 
@@ -123,13 +123,13 @@ export default {
             embed
               .setTitle("傷害不足！")
               .setColor(0xB03030)
-          } else if (damages[0] > args.hp) {
+          } else if (damages[0] >= args.hp) {
             embed
               .setTitle("退刀！")
               .setColor(0xD0B050)
           } else {
             embed
-              .setTitle(`補償時間: ${Math.max(Math.ceil((1 - (args.hp - damages[0]) / damages[1]) * 90), 1 + 20)}秒`)
+              .setTitle(`補償時間: ${Math.min(90, Math.max(Math.ceil((1 - (args.hp - damages[0]) / damages[1]) * 90), 1 + 20))}秒`)
               .setColor(0xB0E0FF)
           }
 
