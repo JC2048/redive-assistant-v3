@@ -29,7 +29,7 @@ try {
 
 // get all guild data and add user role to the set
 const memberRoleSet = new Set()
-
+db.autoCancellation(false)
 db.collection('guild_setting').getFullList<DatabaseGuildSetting>()
   .then(guildSettings => {
     for (const guildSetting of guildSettings) {
@@ -94,7 +94,7 @@ async function registerCommand() {
 
 client.once(Events.ClientReady, async (readyClient) => {
   console.log(`Redive Assistant v3 is ready and logged in as ${readyClient.user.tag}`);
-  console.log()
+  console.log('Updated: 280224a')
   // $ load slash commands to every server ID in config.guild_ids[]
   // registerCommand()
 
