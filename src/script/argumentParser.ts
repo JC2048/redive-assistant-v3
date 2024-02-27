@@ -16,6 +16,9 @@ const argumentNameMap: Record<string, string> = {
   血量: "hp",
 
   身分組: "role",
+
+  第一刀: "damage1",
+  第二刀: "damage2",
 }
 
 export async function argumentParser(interaction: ChatInputCommandInteraction, options: any[], exec: (interaction: ChatInputCommandInteraction, args: Record<string, any>) => Promise<void>) {
