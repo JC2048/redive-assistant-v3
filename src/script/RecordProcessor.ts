@@ -36,7 +36,7 @@ export function recordEmbedGenerator(record: ExpandedDatabaseRecordData | Databa
     // .setTimestamp()
     .setColor(overrides.color ?? (record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL))
 
-  const description = overrides.description ?? `${record.detail ? record.detail + " " : ""}${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""}`
+  const description = overrides.description ?? `${record.detail ? record.detail + " " : ""}${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""} `
 
   if (description.length > 0) embed.setDescription(description)
 
@@ -80,7 +80,7 @@ export function recordStringSelectMenuBuilder(
               return m?.nickname ?? m?.user.globalName ?? m?.user.username ?? ""
             })()} | `
             : ""}${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
-          .setDescription(`${record.detail} ${record.damage > 0 ? `${record.damage}萬` : ""}`)
+          .setDescription(`${record.detail} ${record.damage > 0 ? `${record.damage}萬` : " "}`)
           .setValue(record.id ?? "")
       )
     ])
