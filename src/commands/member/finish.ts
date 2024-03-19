@@ -124,7 +124,7 @@ export default {
           ...recordList.map((record) =>
             new StringSelectMenuOptionBuilder()
               .setLabel(`${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
-              .setDescription(`${record.detail}`)
+              .setDescription(`${record.detail.length === 0 ? " " : record.detail}`)
               .setValue(record.id)
           )
         ])
