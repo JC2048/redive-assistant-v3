@@ -16,8 +16,8 @@ export default {
 
   },
 
-  getGuildRecords: async(guildId: string, filter?: string): Promise<ExpandedDatabaseRecordData[]> => {
-    
+  getGuildRecords: async (guildId: string, filter?: string): Promise<ExpandedDatabaseRecordData[]> => {
+
     const recordFilter = !!filter ? `user.guildId = "${guildId}" && ${filter}` : `user.guildId = "${guildId}"`
     const records = await db.collection('record').getFullList<ExpandedDatabaseRecordData>({
       filter: recordFilter,
@@ -41,7 +41,7 @@ export default {
 
   },
 
-  getById: async(guildId: string, userId: string, filter?: string): Promise<DatabaseRecordData[]> => {
+  getById: async (guildId: string, userId: string, filter?: string): Promise<DatabaseRecordData[]> => {
 
     const recordFilter = `user.userId = "${userId}" && user.guildId = "${guildId}"${filter == "" || filter == undefined ? "" : ` && ${filter}`}`
     const records = await db.collection('record').getFullList<DatabaseRecordData>({
@@ -79,6 +79,20 @@ export default {
       console.error(e)
       return false
     }
+  },
+
+  removeGuildRecords: async (guildId: string) => {
+
+    const guildRecordList = await db.collection('record').getFullList<DatabaseRecordData>({
+      filter: `user.guildId = "${guildId}"`
+    })
+
+    const recordDeletePromises = []
+    for (const record of guildRecordList) {
+      recordDeletePromises.push(db.collection('record').delete(record.id))
+    }
+    if (recordDeletePromises.length > 0) await Promise.all(recordDeletePromises)
+
   }
 
 }
