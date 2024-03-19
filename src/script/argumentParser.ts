@@ -8,7 +8,7 @@ const argumentNameMap: Record<string, string> = {
   補償: "leftover",
   補償刀: "leftover",
   傷害: "damage",
-  備註: "note",
+  備註: "detail",
   成員: "user",
 
   頻道: "channel",

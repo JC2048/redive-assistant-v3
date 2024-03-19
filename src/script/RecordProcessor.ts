@@ -1,6 +1,6 @@
 import { Collection, Embed, EmbedBuilder, GuildMember, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import { DatabaseRecordData, ExpandedDatabaseRecordData, RecordData } from "../types/Database";
-import { knifeCategoryTranslator } from "./util";
+// import { knifeCategoryTranslator } from "./util";
 
 export enum RecordColor {
 
@@ -33,7 +33,7 @@ export function recordEmbedGenerator(record: ExpandedDatabaseRecordData | Databa
       ` ${record.isLeftover ? "🔶" : "🔷"}${overrides.isCompleted ?? record.isCompleted ?? false ? "✅" : ""}${overrides.nextActivator ?? record.nextActivator ?? false ? " ↪️" : ""}`
       + ` ${record.week + 1}周 ${record.boss}王`
     )
-    .setDescription(overrides.description ?? `${knifeCategoryTranslator(record.category)} ${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""}`)
+    .setDescription(overrides.description ?? `${record.detail ? record.detail + " " : ""}${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""}`)
     // .setTimestamp()
     .setColor(overrides.color ?? (record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL))
 
@@ -77,7 +77,7 @@ export function recordStringSelectMenuBuilder(
               return m?.nickname ?? m?.user.globalName ?? m?.user.username ?? ""
             })()} | `
             : ""}${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
-          .setDescription(`${knifeCategoryTranslator(record.category)} ${record.damage > 0 ? `${record.damage}萬` : ""}`)
+          .setDescription(`${record.detail} ${record.damage > 0 ? `${record.damage}萬` : ""}`)
           .setValue(record.id ?? "")
       )
     ])

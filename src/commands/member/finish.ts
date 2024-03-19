@@ -1,6 +1,6 @@
 import { ActionRowBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType, GuildMember } from 'discord.js';
 import { argumentParser } from '../../script/argumentParser';
-import { knifeCategoryTranslator } from '../../script/util';
+// import { knifeCategoryTranslator } from '../../script/util';
 
 import { data as dbData, user, record } from '../../database';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
@@ -124,7 +124,7 @@ export default {
           ...recordList.map((record) =>
             new StringSelectMenuOptionBuilder()
               .setLabel(`${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
-              .setDescription(`${knifeCategoryTranslator(record.category)}`)
+              .setDescription(`${record.detail}`)
               .setValue(record.id)
           )
         ])

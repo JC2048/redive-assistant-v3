@@ -1,6 +1,6 @@
 import { client } from '../index'
 import { record, setting, data } from '../database'
-import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
+import { /* knifeCategoryTranslator, */ parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
 import { ExpandedDatabaseRecordData } from '../types/Database'
 import { Channel, TextChannel } from 'discord.js'
@@ -57,7 +57,7 @@ export default async function generateKnifeTable(guildId: string): Promise<void>
 
       for (const record of recordMatrix[i][j]) {
         const guildMember = members.get(record.expand.user.id)
-        tableText += `  ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}\n`
+        tableText += `  ${record.isLeftover ? "🔸" : "🔹"}${record.isCompleted ? "✅" : ""} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username} ${record.isCompleted ? "" : `${record.detail}`}\n`
       }
     }
     tableText += "\n"

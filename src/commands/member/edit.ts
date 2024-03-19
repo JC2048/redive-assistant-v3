@@ -29,24 +29,30 @@ export default {
           { name: '五王', value: 5 },
         )
     )
-    .addStringOption(option =>
-      option
-        .setName('category')
-        .setDescription('種類')
-        .setRequired(true)
-        .setChoices(
-          { name: '物理刀', value: KnifeCategory.PHYSICAL },
-          { name: '法刀', value: KnifeCategory.MAGIC },
-          { name: '新黑刀', value: KnifeCategory.NYARU },
-          { name: '超佩刀', value: KnifeCategory.PEKO },
-          { name: '其他', value: KnifeCategory.OTHER },
-        )
-    )
+    // .addStringOption(option =>
+    //   option
+    //     .setName('category')
+    //     .setDescription('種類')
+    //     .setRequired(true)
+    //     .setChoices(
+    //       { name: '物理刀', value: KnifeCategory.PHYSICAL },
+    //       { name: '法刀', value: KnifeCategory.MAGIC },
+    //       { name: '新黑刀', value: KnifeCategory.NYARU },
+    //       { name: '超佩刀', value: KnifeCategory.PEKO },
+    //       { name: '其他', value: KnifeCategory.OTHER },
+    //     )
+    // )
     .addBooleanOption(option =>
       option
         .setName('leftover')
         .setDescription('補償刀')
         .setRequired(true)
+    )
+    .addStringOption(option =>
+      option
+        .setName('備註')
+        .setDescription('備註')
+        .setRequired(false)
     ),
 
   execute: async (interaction) => {

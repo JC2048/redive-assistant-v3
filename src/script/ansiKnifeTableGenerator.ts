@@ -1,6 +1,6 @@
 import { client } from '../index'
 import { record, setting, data } from '../database'
-import { knifeCategoryTranslator, parseChineseBossNumber, weekToStage } from './util'
+import { /* knifeCategoryTranslator, */ parseChineseBossNumber, weekToStage } from './util'
 import config from '../config'
 import { ExpandedDatabaseRecordData } from 'types/Database'
 import { TextChannel } from 'discord.js'
@@ -76,8 +76,15 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
         const guildMember = members.get(record.expand.user.userId)
         // TODO only reset ANSI color at the end of each row
         const recordText =
-          ANSI.formatText(`${record.nextActivator ? "↪️" : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
-            + ` ${record.isCompleted ? "" : `${knifeCategoryTranslator(record.category)}`}`, record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
+          ANSI.formatText(`${record.nextActivator
+            ? "↪️"
+            : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
+            + `${record.isCompleted
+              ? ""
+              : `${record.detail
+                ? ` (${record.detail})`
+                : ""}`}`,
+            record.isLeftover ? ANSIForeColor.YELLOW : ANSIForeColor.BLUE
           )
           + ` ${!record.isCompleted && !!record.damage && record.damage > 0 ? `${record.damage.toString()}萬` : ""}`  // only add damage to non-completed records
         recordTextList.push(` ${record.isLeftover ? "🔶" : "🔷"}${recordText}\n`)

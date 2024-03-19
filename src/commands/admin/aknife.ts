@@ -5,7 +5,7 @@ import { KnifeCategory } from '../../Enums';
 
 import { user, record, data as dbData } from '../../database';
 
-import { knifeCategoryTranslator } from '../../script/util';
+// import { knifeCategoryTranslator } from '../../script/util';
 import { RecordColor, recordEmbedGenerator } from '../../script/RecordProcessor';
 import { RecordData } from '../../types/Database';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
@@ -42,19 +42,6 @@ const data = new SlashCommandBuilder()
         { name: '五王', value: 5 },
       )
   )
-  .addStringOption(option =>
-    option
-      .setName('種類')
-      .setDescription('種類')
-      .setRequired(true)
-      .setChoices(
-        { name: '物理刀', value: KnifeCategory.PHYSICAL },
-        { name: '法刀', value: KnifeCategory.MAGIC },
-        { name: '新黑刀', value: KnifeCategory.NYARU },
-        { name: '超佩刀', value: KnifeCategory.PEKO },
-        { name: '其他', value: KnifeCategory.OTHER },
-      )
-  )
   .addIntegerOption(option =>
     option
       .setName('補償')
@@ -65,10 +52,16 @@ const data = new SlashCommandBuilder()
         { name: '是', value: 1 },
       )
   )
-  .addStringOption(option =>
+  .addIntegerOption(option =>
     option
       .setName('傷害')
       .setDescription('傷害')
+      .setRequired(false)
+  )
+  .addStringOption(option =>
+    option
+      .setName('備註')
+      .setDescription('備註')
       .setRequired(false)
   )
 
@@ -141,7 +134,7 @@ export default {
         // userId: interaction.user.id,
         week: args.week - 1,
         boss: args.boss,
-        category: args.category,
+        detail: args.detail ? args.detail : "",
         isLeftover: args.leftover === 1,
         isCompleted: false,
         damage: args.damage ?? 0,

@@ -19,20 +19,20 @@ export function weekToStage(week: number): number {
 
 }
 
-export function knifeCategoryTranslator(knifeCategory: KnifeCategory): string {
-  switch (knifeCategory) {
-    case KnifeCategory.PHYSICAL:
-      return "物理刀"
-    case KnifeCategory.MAGIC:
-      return "法刀"
-    case KnifeCategory.NYARU:
-      return "新黑刀"
-    case KnifeCategory.PEKO:
-      return "超佩刀"
-    case KnifeCategory.OTHER:
-      return "其他"
-    default:
-      return "未知"
-  }
+// export function knifeCategoryTranslator(knifeCategory: KnifeCategory): string {
+//   switch (knifeCategory) {
+//     case KnifeCategory.PHYSICAL:
+//       return "物理刀"
+//     case KnifeCategory.MAGIC:
+//       return "法刀"
+//     case KnifeCategory.NYARU:
+//       return "新黑刀"
+//     case KnifeCategory.PEKO:
+//       return "超佩刀"
+//     case KnifeCategory.OTHER:
+//       return "其他"
+//     default:
+//       return "未知"
+//   }
 
-}
+// }

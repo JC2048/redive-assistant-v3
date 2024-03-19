@@ -75,7 +75,7 @@ export interface RecordData {
   // userId: string
   week: number
   boss: 1 | 2 | 3 | 4 | 5
-  category: KnifeCategory
+  detail: string
   isLeftover: boolean
   isCompleted: boolean
   damage: number
