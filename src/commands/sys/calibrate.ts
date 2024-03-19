@@ -4,6 +4,9 @@ import generateKnifeTable from '../../script/knifeTableGenerator';
 import { weekToStage } from '../../script/util';
 
 import { user, data as dbData } from '../../database';
+import config from '../../config';
+import generateANSIKnifeTable from 'script/ansiKnifeTableGenerator';
+import generateANSIMemberTable from 'script/ansiMemberTableGenerator';
 
 const data = new SlashCommandBuilder()
   .setName('calibrate')
@@ -19,12 +22,20 @@ export default {
     const users = await user.getGuildUsers(interaction.guildId!, true);
     const guildData = await dbData.get(interaction.guildId!)
 
+    const currentProgress = guildData.progress
+    const newHpArr: number[] = []
+    for (let i = 0; i < 5; i++) {
+      newHpArr[i] = config.hp[weekToStage(currentProgress[i] + 1) - 1][i]
+    }
+
     const calibratedGuildData = {
       knifeCount: 0,
-      leftoverCount: 0
+      leftoverCount: 0,
+      hp: [0, 0, 0, 0, 0]
     }
     const calibratedUserId: string[] = []
     let isGuildDataCalibrated = false
+    let isGuildHpCalibrated = false
 
     for (const guildUser of users) {
 
@@ -51,6 +62,12 @@ export default {
         } else {
           calLeftoverCount -= 1
         }
+
+        // calibrate current hp
+        if (record.isCompleted && (record.week == guildData.progress[record.boss - 1])) {
+          newHpArr[record.boss - 1] -= record.damage
+        }
+
       }
 
       if (!(guildUser.knifeCount === calKnifeCount && guildUser.leftoverCount === calLeftoverCount)) {
@@ -66,6 +83,7 @@ export default {
       // update the calibrated guild data
       calibratedGuildData.knifeCount += calKnifeCount
       calibratedGuildData.leftoverCount += calLeftoverCount
+
     }
 
     // update guild data if needed 
@@ -75,14 +93,27 @@ export default {
       isGuildDataCalibrated = true
     }
 
+    // update hp
+    if (!(guildData.hp[0] === newHpArr[0] && guildData.hp[1] === newHpArr[1] && guildData.hp[2] === newHpArr[2] && guildData.hp[3] === newHpArr[3] && guildData.hp[4] === newHpArr[4])) {
+      await dbData.update(interaction.guildId!, { hp: newHpArr })
+      isGuildHpCalibrated = true
+    }
+
     let message: string = ""
     if (!isGuildDataCalibrated) {
-      message = "已檢查完成,沒有需要校正的資料"
+      message += "沒有需要校正的正刀及補償刀數量"
     } else {
-      message = "已校正公會剩餘正刀及補償刀數量"
+      message += "已校正公會剩餘正刀及補償刀數量"
       if (calibratedUserId.length > 0) {
         message += `\n已校正以下使用者的剩餘正刀及補償刀數量:\n${calibratedUserId.map(id => `<@${id}>`).join('\n')}`
       }
+      generateANSIMemberTable(interaction.guildId)
+    }
+    if (!isGuildHpCalibrated) {
+      message += "\n沒有需要校正的HP"
+    } else {
+      message += "\n已校正公會HP"
+      generateANSIKnifeTable(interaction.guildId)
     }
 
     await interaction.editReply({
