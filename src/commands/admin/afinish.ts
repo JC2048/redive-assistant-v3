@@ -171,7 +171,7 @@ export default {
       // update the record
       const updatedRecord = await record.update(selectedRecordId, {
         isCompleted: true,
-        damage: args.damage
+        damage: (args.damage >= 20000 ? Math.round(args.damage / 10000) : args.damage)
       })
 
       // update user data & guild data
