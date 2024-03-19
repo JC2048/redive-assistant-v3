@@ -27,11 +27,11 @@ export default async function generateANSIMemberTable(guildId: string, force: bo
 
   users
     .sort((a, b) => parseInt(a.userId) - parseInt(b.userId))
+    .sort((a, b) => (b.sl ? 1 : 0) - (a.sl ? 1 : 0))
     .sort((a, b) => b.leftoverCount - a.leftoverCount)
     .sort((a, b) => b.knifeCount - a.knifeCount)
 
-
-  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔷${guildData.knifeCount} 🔶${guildData.leftoverCount}\n\n`
+  let tableText = `\`\`\`ansi\n戰隊尚餘: 🔷${guildData.knifeCount} 🔶${guildData.leftoverCount}\n\n🔷|🔶\n`
   // console.log(users)
 
   for (const userData of users) {
@@ -46,7 +46,7 @@ export default async function generateANSIMemberTable(guildId: string, force: bo
     //   + `${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
 
     // $ Disabled coloring of remaining knife count
-    let userText = `${userData.knifeCount}|${userData.leftoverCount} ${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
+    let userText = `${userData.knifeCount}|${userData.leftoverCount} ${userData.knifeCount + userData.leftoverCount === 0 ? "✅" : ""}${userData.sl ? "⚠️" : ""}${member.nickname ?? member.user.globalName ?? member.user.username}`
 
     const fullRecords = userData.expand?.record.filter(r => !r.isLeftover && r.isCompleted) ?? []
     const leftoverRecords = userData.expand?.record.filter(r => r.isLeftover && r.isCompleted) ?? []

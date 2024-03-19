@@ -78,7 +78,7 @@ export default async function generateANSIKnifeTable(guildId: string, round?: nu
         const recordText =
           ANSI.formatText(`${record.nextActivator
             ? "↪️"
-            : (record.isCompleted ? "✅" : "")} ${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
+            : (record.isCompleted ? "✅" : "")} ${record.expand.user.sl ? "⚠️" : ""}${guildMember.nickname ?? guildMember.user.globalName ?? guildMember.user.username}`
             + `${record.isCompleted
               ? ""
               : `${record.detail
