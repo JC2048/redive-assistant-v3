@@ -1,6 +1,5 @@
-import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, CommandInteraction, } from 'discord.js';
-import { data as dbData, setting, user } from '../../database';
-import { client } from '../../index';
+import { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, } from 'discord.js';
+import { data as dbData, record, setting, user } from '../../database';
 import generateANSIKnifeTable from '../../script/ansiKnifeTableGenerator';
 import generateANSIMemberTable from '../../script/ansiMemberTableGenerator';
 
@@ -63,6 +62,7 @@ export default {
         // delete all existing data
         await user.deleteGuildUsers(interaction.guildId)
         await user.guildInit(interaction.guildId!, guildMemberIds)
+        // await record.removeGuildRecords(interaction.guildId!)
 
         console.log("finish guild user init")
         // TODO update member and knife table
