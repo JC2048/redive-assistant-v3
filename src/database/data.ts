@@ -11,8 +11,7 @@ export default {
       guildId: guildId,
 
       progress: [0, 0, 0, 0, 0],
-      hp: config.hp[weekToStage(0) - 1] as [number, number, number, number, number],
-
+      hp: config.hp[weekToStage(1) - 1],
       knifeCount: 90,
       leftoverCount: 0
 
@@ -51,7 +50,10 @@ export default {
   get: async (guildId: string): Promise<DatabaseGuildData> => {
 
     try {
-      const data = await db.collection('guild_data').getFirstListItem<DatabaseGuildData>(`guildId = "${guildId}"`)
+      const data = await db.collection('guild_data').getFirstListItem<DatabaseGuildData>(
+        `guildId = "${guildId}"`,
+          
+        )
       return data
     } catch (e) {
       console.log("[ERROR] Error while getting guild data for guild " + guildId)
