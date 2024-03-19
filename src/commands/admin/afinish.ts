@@ -128,7 +128,7 @@ export default {
           ...recordList.map((record) =>
             new StringSelectMenuOptionBuilder()
               .setLabel(`${record.isLeftover ? "🔶" : "🔷"}${record.week + 1}周${record.boss}王`)
-              .setDescription(`${record.detail}`)
+              .setDescription(`${record.detail.length === 0 ? " " : record.detail}`)
               .setValue(record.id)
           )
         ])
@@ -177,7 +177,7 @@ export default {
       // update user data & guild data
       const guildData = await dbData.get(interaction.guildId)
       const updatedHp = [...guildData.hp]
-      updatedHp[args.boss - 1] = Math.max(guildData.hp[args.boss - 1] - args.damage, 0)
+      updatedHp[updatedRecord.boss - 1] = Math.max(guildData.hp[updatedRecord.boss - 1] - (args.damage >= 20000 ? Math.round(args.damage / 10000) : args.damage), 0)
 
       // TODO trigger NEXT event since hp is below 0
 
