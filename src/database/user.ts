@@ -33,7 +33,8 @@ export default {
       guildId: guildId,
       knifeCount: 3,
       leftoverCount: 0,
-      record: []
+      record: [],
+      sl: false
     }
 
     await db.collection('user').create(
@@ -88,7 +89,8 @@ export default {
           userId: userId,
           guildId: guildId,
           knifeCount: 3,
-          leftoverCount: 0
+          leftoverCount: 0,
+          sl: false
         }, {
           requestKey: userId
         })

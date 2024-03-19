@@ -33,9 +33,12 @@ export function recordEmbedGenerator(record: ExpandedDatabaseRecordData | Databa
       ` ${record.isLeftover ? "🔶" : "🔷"}${overrides.isCompleted ?? record.isCompleted ?? false ? "✅" : ""}${overrides.nextActivator ?? record.nextActivator ?? false ? " ↪️" : ""}`
       + ` ${record.week + 1}周 ${record.boss}王`
     )
-    .setDescription(overrides.description ?? `${record.detail ? record.detail + " " : ""}${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""}`)
     // .setTimestamp()
     .setColor(overrides.color ?? (record.isLeftover ? RecordColor.LEFTOVER : RecordColor.NORMAL))
+
+  const description = overrides.description ?? `${record.detail ? record.detail + " " : ""}${overrides.damage ?? record.damage ?? 0 > 0 ? `${record.damage}萬` : ""}`
+
+  if (description.length > 0) embed.setDescription(description)
 
   if (!!overrides.footer) embed.setFooter({ text: overrides.footer })
 

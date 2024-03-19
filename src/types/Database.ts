@@ -57,7 +57,7 @@ export interface UserData {
   knifeCount: number
   leftoverCount: number
   record: string[]
-  // sl: boolean
+  sl: boolean
 }
 
 export interface UserDataOperation {

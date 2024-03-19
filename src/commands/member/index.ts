@@ -5,6 +5,7 @@ import edit from "./edit";
 import finish from "./finish";
 import knife from "./knife";
 import sl from "./sl";
+import sllist from "./sllist";
 import next from "./next";
 
 export {
@@ -13,5 +14,6 @@ export {
   finish,
   knife,
   sl,
+  sllist,
   next,
 }
